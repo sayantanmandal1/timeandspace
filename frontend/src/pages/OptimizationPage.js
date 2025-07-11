@@ -339,7 +339,7 @@ export default function OptimizationPage() {
                     <LightbulbIcon color="primary" />
                     <Typography variant="h6">Optimization Suggestions</Typography>
                     <Chip
-                      label={suggestions.length || 0}
+                      label={Array.isArray(suggestions) ? suggestions.length : (suggestions.suggestions ? suggestions.suggestions.length : 0)}
                       size="small"
                       color="primary"
                     />
@@ -347,14 +347,32 @@ export default function OptimizationPage() {
                 </AccordionSummary>
                 <AccordionDetails>
                   <List dense>
-                    {suggestions.map((suggestion, index) => (
-                      <ListItem key={index}>
+                    {Array.isArray(suggestions) ? (
+                      suggestions.map((suggestion, index) => (
+                        <ListItem key={index}>
+                          <ListItemIcon>
+                            <CheckCircleIcon color="success" />
+                          </ListItemIcon>
+                          <ListItemText primary={suggestion} />
+                        </ListItem>
+                      ))
+                    ) : suggestions.suggestions ? (
+                      suggestions.suggestions.map((suggestion, index) => (
+                        <ListItem key={index}>
+                          <ListItemIcon>
+                            <CheckCircleIcon color="success" />
+                          </ListItemIcon>
+                          <ListItemText primary={suggestion} />
+                        </ListItem>
+                      ))
+                    ) : (
+                      <ListItem>
                         <ListItemIcon>
                           <CheckCircleIcon color="success" />
                         </ListItemIcon>
-                        <ListItemText primary={suggestion} />
+                        <ListItemText primary="No specific suggestions available" />
                       </ListItem>
-                    ))}
+                    )}
                   </List>
                 </AccordionDetails>
               </Accordion>
@@ -414,13 +432,13 @@ export default function OptimizationPage() {
                       border: '1px solid #404040'
                     }}
                   >
-                    {optimizedCode}
+                    {typeof optimizedCode === 'string' ? optimizedCode : (optimizedCode.optimized_code || JSON.stringify(optimizedCode, null, 2))}
                   </Box>
                   <Box sx={{ mt: 2, display: 'flex', gap: 1 }}>
                     <Button
                       variant="outlined"
                       size="small"
-                      onClick={() => navigator.clipboard.writeText(optimizedCode)}
+                      onClick={() => navigator.clipboard.writeText(typeof optimizedCode === 'string' ? optimizedCode : (optimizedCode.optimized_code || JSON.stringify(optimizedCode, null, 2)))}
                       startIcon={<ContentCopyIcon />}
                     >
                       Copy Code
@@ -428,7 +446,7 @@ export default function OptimizationPage() {
                     <Button
                       variant="outlined"
                       size="small"
-                      onClick={() => setCode(optimizedCode)}
+                      onClick={() => setCode(typeof optimizedCode === 'string' ? optimizedCode : (optimizedCode.optimized_code || ''))}
                       startIcon={<CodeIcon />}
                     >
                       Replace Original
