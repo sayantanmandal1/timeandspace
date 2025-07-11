@@ -17,7 +17,7 @@ export default function HomePage() {
       <Paper sx={{ p: 4, mb: 4 }} elevation={3}>
         <Typography variant="h3" gutterBottom>DSA Code Analysis Platform</Typography>
         <Typography variant="h6" color="text.secondary" gutterBottom>
-          Analyze, visualize, and optimize your DSA code with FAANG-level insights.
+          Analyze, visualize, and optimize your DSA code with insights.
         </Typography>
         <Button component={Link} to="/analyze" variant="contained" color="primary" size="large" sx={{ mt: 2 }}>
           Get Started

@@ -1,8 +1,8 @@
-# Time and Space: FAANG-Level DSA Code Analysis & Visualization Platform
+# Time and Space: DSA Code Analysis & Visualization Platform
 
 ## Overview
 
-**Time and Space** is a full stack, FAANG-level platform for analyzing and visualizing Data Structures & Algorithms (DSA) code in any major language. It provides:
+**Time and Space** is a full stack platform for analyzing and visualizing Data Structures & Algorithms (DSA) code in any major language. It provides:
 - Multi-language support (Python, Java, C++, JavaScript, and more)
 - Interactive AST (Abstract Syntax Tree) visualization
 - Step-by-step execution trace and graph-based visualizations
@@ -90,4 +90,3 @@ MIT. Free for personal and commercial use.
 
 ---
 
-**This project is designed to stand out in the 2025 job market and is ready to impress at any FAANG interview or coding showcase!** 

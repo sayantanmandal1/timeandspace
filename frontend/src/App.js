@@ -201,7 +201,7 @@ function App() {
                     fontWeight: 500
                   }}
                 >
-                  FAANG Ready
+                  Ready to Analyze?
                 </Box>
               </Box>
             </Toolbar>
