@@ -1,0 +1,58 @@
+# Python
+__pycache__/
+*.py[cod]
+*.pyo
+*.pyd
+*.pyc
+*.pdb
+*.egg-info/
+venv/
+.env
+.env.*
+
+# Node/React
+node_modules/
+build/
+dist/
+.npm/
+.npmrc
+.yarn*
+
+# Logs
+*.log
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
+
+# IDEs
+.vscode/
+.idea/
+*.sublime-workspace
+*.sublime-project
+.DS_Store
+Thumbs.db
+
+# OS
+.DS_Store
+*.swp
+
+# Misc
+*.bak
+*.tmp
+*.orig
+
+# Frontend
+frontend/.env
+frontend/.env.*
+frontend/node_modules/
+frontend/build/
+frontend/dist/
+
+# Backend
+backend/.env
+backend/.env.*
+backend/venv/
+backend/__pycache__/
+backend/*.sqlite3
+backend/*.db
+backend/*.log
