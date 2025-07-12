@@ -1,34 +1,12 @@
 import React from 'react';
-import AceEditor from 'react-ace';
-import 'ace-builds/src-noconflict/mode-python';
-import 'ace-builds/src-noconflict/mode-javascript';
-import 'ace-builds/src-noconflict/mode-c_cpp';
-import 'ace-builds/src-noconflict/mode-java';
-import 'ace-builds/src-noconflict/mode-golang';
-import 'ace-builds/src-noconflict/mode-rust';
-import 'ace-builds/src-noconflict/mode-php';
-import 'ace-builds/src-noconflict/mode-ruby';
-import 'ace-builds/src-noconflict/mode-scala';
-import 'ace-builds/src-noconflict/mode-swift';
-import 'ace-builds/src-noconflict/mode-kotlin';
-import 'ace-builds/src-noconflict/theme-monokai';
-import 'ace-builds/src-noconflict/theme-github';
-import 'ace-builds/src-noconflict/theme-tomorrow_night';
-import 'ace-builds/src-noconflict/ext-language_tools';
+import { TextField, Box } from '@mui/material';
 
 const languageMap = {
   python: 'python',
   javascript: 'javascript',
   java: 'java',
-  cpp: 'c_cpp',
-  c: 'c_cpp',
-  go: 'golang',
-  rust: 'rust',
-  php: 'php',
-  ruby: 'ruby',
-  scala: 'scala',
-  swift: 'swift',
-  kotlin: 'kotlin',
+  cpp: 'cpp',
+  c: 'c',
 };
 
 export default function CodeEditor({ 
@@ -38,41 +16,79 @@ export default function CodeEditor({
   theme = 'monokai', 
   height = '600px',
   width = '100%',
+  readOnly = false,
   ...props 
 }) {
+  const getLanguageColor = (lang) => {
+    switch (lang) {
+      case 'python': return '#3776ab';
+      case 'javascript': return '#f7df1e';
+      case 'java': return '#007396';
+      case 'cpp': return '#00599c';
+      case 'c': return '#a8b9cc';
+      default: return '#3776ab';
+    }
+  };
+
   return (
-    <AceEditor
-      mode={languageMap[language] || 'python'}
-      theme={theme}
-      value={value}
-      onChange={onChange}
-      name="code-editor"
-      width={width}
-      height={height}
-      fontSize={14}
-      fontFamily="'Fira Code', 'Monaco', 'Menlo', 'Ubuntu Mono', monospace"
-      setOptions={{ 
-        useWorker: false,
-        enableBasicAutocompletion: true,
-        enableLiveAutocompletion: true,
-        enableSnippets: true,
-        showLineNumbers: true,
-        tabSize: 2,
-        showPrintMargin: false,
-        highlightActiveLine: true,
-        showGutter: true,
-        displayIndentGuides: true,
-      }}
-      editorProps={{ 
-        $blockScrolling: true,
-        $highlightActiveLine: true,
-      }}
-      style={{
-        borderRadius: '8px',
-        border: '1px solid #e0e0e0',
-        minWidth: '800px',
-      }}
-      {...props}
-    />
+    <Box sx={{ position: 'relative' }}>
+      <TextField
+        multiline
+        fullWidth
+        value={value}
+        onChange={(e) => onChange(e.target.value)}
+        variant="outlined"
+        disabled={readOnly}
+        sx={{
+          '& .MuiOutlinedInput-root': {
+            fontFamily: "'Fira Code', 'Monaco', 'Menlo', 'Ubuntu Mono', monospace",
+            fontSize: '14px',
+            backgroundColor: theme === 'monokai' ? '#272822' : '#f8f9fa',
+            color: theme === 'monokai' ? '#f8f8f2' : '#333',
+            minHeight: height,
+            '& fieldset': {
+              borderColor: getLanguageColor(language),
+              borderWidth: '2px',
+            },
+            '&:hover fieldset': {
+              borderColor: getLanguageColor(language),
+            },
+            '&.Mui-focused fieldset': {
+              borderColor: getLanguageColor(language),
+            },
+          },
+          '& .MuiInputBase-input': {
+            padding: '16px',
+            lineHeight: '1.5',
+            tabSize: 2,
+          },
+        }}
+        InputProps={{
+          style: {
+            fontFamily: "'Fira Code', 'Monaco', 'Menlo', 'Ubuntu Mono', monospace",
+            fontSize: '14px',
+            lineHeight: '1.5',
+          }
+        }}
+        {...props}
+      />
+      <Box
+        sx={{
+          position: 'absolute',
+          top: '8px',
+          right: '12px',
+          backgroundColor: getLanguageColor(language),
+          color: 'white',
+          px: 1,
+          py: 0.5,
+          borderRadius: 1,
+          fontSize: '12px',
+          fontWeight: 'bold',
+          textTransform: 'uppercase',
+        }}
+      >
+        {language}
+      </Box>
+    </Box>
   );
 } 

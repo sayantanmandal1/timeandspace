@@ -729,8 +729,8 @@ export default function AnalyzePage() {
 
       {/* Onboarding Dialog */}
       <Dialog open={showOnboarding} onClose={() => setShowOnboarding(false)} maxWidth="md" fullWidth>
-        <DialogTitle>
-          <Typography variant="h5" fontWeight="bold">Welcome to DSA Code Visualizer</Typography>
+        <DialogTitle sx={{ fontWeight: 'bold' }}>
+          Welcome to DSA Code Visualizer
         </DialogTitle>
         <DialogContent dividers>
           <Typography variant="h6" gutterBottom color="#333">

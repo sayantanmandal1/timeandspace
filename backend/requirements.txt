@@ -67,6 +67,9 @@ email-validator==2.1.0
 # WebSocket and async support
 websockets==12.0
 
+# HTTP requests for external APIs
+requests==2.31.0
+
 # Image processing (for visualizations)
 pillow==10.1.0
 
