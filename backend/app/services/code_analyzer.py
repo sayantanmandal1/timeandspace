@@ -250,19 +250,40 @@ class CodeAnalyzer:
             raise
     
     def _parse_javascript_ast(self, code: str) -> ASTNode:
-        """Parse JavaScript code to AST (placeholder)"""
-        # In a real implementation, use a JavaScript AST parser
-        return self._create_placeholder_ast(code, "javascript")
+        """Parse JavaScript code to AST using tree-sitter"""
+        try:
+            tree_data = parse_code_with_tree_sitter(code, "javascript")
+            if tree_data and "error" not in tree_data:
+                return self._convert_tree_sitter_dict_to_astnode(tree_data)
+            else:
+                return self._create_basic_ast(code, "javascript")
+        except Exception as e:
+            logger.warning(f"JavaScript AST parsing failed: {e}")
+            return self._create_basic_ast(code, "javascript")
     
     def _parse_java_ast(self, code: str) -> ASTNode:
-        """Parse Java code to AST (placeholder)"""
-        # In a real implementation, use a Java AST parser
-        return self._create_placeholder_ast(code, "java")
+        """Parse Java code to AST using tree-sitter"""
+        try:
+            tree_data = parse_code_with_tree_sitter(code, "java")
+            if tree_data and "error" not in tree_data:
+                return self._convert_tree_sitter_dict_to_astnode(tree_data)
+            else:
+                return self._create_basic_ast(code, "java")
+        except Exception as e:
+            logger.warning(f"Java AST parsing failed: {e}")
+            return self._create_basic_ast(code, "java")
     
     def _parse_cpp_ast(self, code: str) -> ASTNode:
-        """Parse C++ code to AST (placeholder)"""
-        # In a real implementation, use a C++ AST parser
-        return self._create_placeholder_ast(code, "cpp")
+        """Parse C++ code to AST using tree-sitter"""
+        try:
+            tree_data = parse_code_with_tree_sitter(code, "cpp")
+            if tree_data and "error" not in tree_data:
+                return self._convert_tree_sitter_dict_to_astnode(tree_data)
+            else:
+                return self._create_basic_ast(code, "cpp")
+        except Exception as e:
+            logger.warning(f"C++ AST parsing failed: {e}")
+            return self._create_basic_ast(code, "cpp")
     
     def _convert_ast_node(self, node) -> ASTNode:
         """Convert AST node to our format"""
@@ -286,6 +307,52 @@ class CodeAnalyzer:
             column=0,
             value=f"Placeholder AST for {language}",
             children=[]
+        )
+    
+    def _create_basic_ast(self, code: str, language: str) -> ASTNode:
+        """Create basic AST structure for languages without full parser support"""
+        lines = code.split('\n')
+        children = []
+        
+        # Create basic structure based on code content
+        for i, line in enumerate(lines, 1):
+            line = line.strip()
+            if line:
+                if line.startswith('def ') or line.startswith('function '):
+                    children.append(ASTNode(
+                        node_type="Function",
+                        line_number=i,
+                        column=0,
+                        value=line
+                    ))
+                elif line.startswith('class '):
+                    children.append(ASTNode(
+                        node_type="Class",
+                        line_number=i,
+                        column=0,
+                        value=line
+                    ))
+                elif '=' in line and not line.startswith('#'):
+                    children.append(ASTNode(
+                        node_type="Assignment",
+                        line_number=i,
+                        column=0,
+                        value=line
+                    ))
+                elif any(keyword in line for keyword in ['if ', 'for ', 'while ', 'try:']):
+                    children.append(ASTNode(
+                        node_type="ControlFlow",
+                        line_number=i,
+                        column=0,
+                        value=line
+                    ))
+        
+        return ASTNode(
+            node_type="Program",
+            line_number=1,
+            column=0,
+            value=f"Basic AST for {language}",
+            children=children
         )
     
     def _analyze_ast_statistics(self, ast_tree: ASTNode) -> Dict[str, Any]:

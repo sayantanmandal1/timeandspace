@@ -27,10 +27,11 @@ def init_monitoring() -> None:
 
 
 class MetricsCollector:
-    """Simple metrics collector (placeholder for Prometheus)"""
+    """Comprehensive metrics collector with real-time analytics"""
     
     def __init__(self):
         self.metrics = metrics
+        self.start_time = datetime.utcnow()
     
     def increment_counter(self, name: str, labels: Optional[Dict[str, str]] = None):
         """Increment a counter metric"""
@@ -45,6 +46,10 @@ class MetricsCollector:
         if key not in self.metrics["performance"]:
             self.metrics["performance"][key] = []
         self.metrics["performance"][key].append(value)
+        
+        # Keep only last 1000 values to prevent memory issues
+        if len(self.metrics["performance"][key]) > 1000:
+            self.metrics["performance"][key] = self.metrics["performance"][key][-1000:]
     
     def record_gauge(self, name: str, value: float, labels: Optional[Dict[str, str]] = None):
         """Record a gauge metric"""
@@ -58,9 +63,53 @@ class MetricsCollector:
         self.metrics["errors"][error_type] += 1
         logger.error("Error recorded", error_type=error_type, error_message=error_message)
     
+    def record_api_call(self, endpoint: str, method: str, status_code: int, duration: float):
+        """Record API call metrics"""
+        self.increment_counter("api_calls_total", {"endpoint": endpoint, "method": method, "status": str(status_code)})
+        self.record_histogram("api_duration_seconds", duration, {"endpoint": endpoint, "method": method})
+        
+        if status_code >= 400:
+            self.record_error("api_error", f"{method} {endpoint} returned {status_code}")
+    
+    def record_code_analysis(self, language: str, analysis_type: str, duration: float, success: bool):
+        """Record code analysis metrics"""
+        self.increment_counter("code_analysis_total", {"language": language, "type": analysis_type, "success": str(success)})
+        self.record_histogram("code_analysis_duration_seconds", duration, {"language": language, "type": analysis_type})
+    
+    def record_code_execution(self, language: str, duration: float, success: bool, memory_usage: float = 0):
+        """Record code execution metrics"""
+        self.increment_counter("code_execution_total", {"language": language, "success": str(success)})
+        self.record_histogram("code_execution_duration_seconds", duration, {"language": language})
+        if memory_usage > 0:
+            self.record_histogram("code_execution_memory_mb", memory_usage, {"language": language})
+    
     def get_metrics(self) -> Dict[str, Any]:
-        """Get all metrics"""
-        return self.metrics.copy()
+        """Get all metrics with computed statistics"""
+        metrics_copy = self.metrics.copy()
+        
+        # Add computed statistics
+        metrics_copy["statistics"] = {
+            "uptime_seconds": (datetime.utcnow() - self.start_time).total_seconds(),
+            "total_requests": sum(metrics_copy["requests"].values()),
+            "total_errors": sum(metrics_copy["errors"].values()),
+            "error_rate": sum(metrics_copy["errors"].values()) / max(sum(metrics_copy["requests"].values()), 1) * 100
+        }
+        
+        # Add performance statistics
+        performance_stats = {}
+        for key, values in metrics_copy["performance"].items():
+            if values:
+                performance_stats[key] = {
+                    "count": len(values),
+                    "min": min(values),
+                    "max": max(values),
+                    "avg": sum(values) / len(values),
+                    "p95": sorted(values)[int(len(values) * 0.95)] if len(values) > 0 else 0,
+                    "p99": sorted(values)[int(len(values) * 0.99)] if len(values) > 0 else 0
+                }
+        metrics_copy["performance_statistics"] = performance_stats
+        
+        return metrics_copy
     
     def reset_metrics(self):
         """Reset all metrics"""
@@ -70,6 +119,20 @@ class MetricsCollector:
             "performance": {},
             "custom": {}
         }
+        self.start_time = datetime.utcnow()
+    
+    def get_health_score(self) -> float:
+        """Calculate overall health score (0-100)"""
+        total_requests = sum(self.metrics["requests"].values())
+        total_errors = sum(self.metrics["errors"].values())
+        
+        if total_requests == 0:
+            return 100.0
+        
+        error_rate = total_errors / total_requests
+        health_score = max(0, 100 - (error_rate * 100))
+        
+        return round(health_score, 2)
 
 
 # Global metrics collector

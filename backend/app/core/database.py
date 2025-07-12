@@ -218,6 +218,13 @@ async def init_db():
             logger.warning("Database connection failed, but continuing with fallback")
             # Continue with fallback - the application can still work with limited functionality
         
+        # Import models to ensure they are registered with Base
+        try:
+            from app.models import user, analysis, execution, optimization, batch
+            logger.info("Database models imported successfully")
+        except ImportError as e:
+            logger.warning(f"Could not import all models: {e}")
+        
         # Create tables
         try:
             if async_engine:

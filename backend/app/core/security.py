@@ -51,47 +51,100 @@ class SecurityUtils:
             return False
     
     def create_access_token(self, data: Dict[str, Any], expires_delta: Optional[timedelta] = None) -> str:
-        """Create simple access token (placeholder for JWT)"""
+        """Create JWT access token"""
+        import json
         to_encode = data.copy()
         if expires_delta:
             expire = datetime.utcnow() + expires_delta
         else:
             expire = datetime.utcnow() + timedelta(minutes=settings.ACCESS_TOKEN_EXPIRE_MINUTES)
         
-        to_encode.update({"exp": expire.timestamp()})
-        token_data = f"{base64.b64encode(str(to_encode).encode()).decode()}.{self.jwt_secret}"
-        return token_data
+        to_encode.update({
+            "exp": expire.timestamp(),
+            "iat": datetime.utcnow().timestamp(),
+            "type": "access"
+        })
+        
+        # Create JWT-like token (simplified)
+        header = {"alg": "HS256", "typ": "JWT"}
+        payload = to_encode
+        
+        header_b64 = base64.urlsafe_b64encode(json.dumps(header).encode()).rstrip(b'=').decode()
+        payload_b64 = base64.urlsafe_b64encode(json.dumps(payload).encode()).rstrip(b'=').decode()
+        
+        # Create signature
+        message = f"{header_b64}.{payload_b64}"
+        signature = hmac.new(
+            self.jwt_secret.encode(),
+            message.encode(),
+            hashlib.sha256
+        ).digest()
+        signature_b64 = base64.urlsafe_b64encode(signature).rstrip(b'=').decode()
+        
+        return f"{header_b64}.{payload_b64}.{signature_b64}"
     
     def create_refresh_token(self, data: Dict[str, Any]) -> str:
-        """Create simple refresh token (placeholder for JWT)"""
+        """Create JWT refresh token"""
+        import json
         to_encode = data.copy()
         expire = datetime.utcnow() + timedelta(days=settings.REFRESH_TOKEN_EXPIRE_DAYS)
-        to_encode.update({"exp": expire.timestamp(), "type": "refresh"})
-        token_data = f"{base64.b64encode(str(to_encode).encode()).decode()}.{self.jwt_secret}"
-        return token_data
+        to_encode.update({
+            "exp": expire.timestamp(),
+            "iat": datetime.utcnow().timestamp(),
+            "type": "refresh"
+        })
+        
+        # Create JWT-like token (simplified)
+        header = {"alg": "HS256", "typ": "JWT"}
+        payload = to_encode
+        
+        header_b64 = base64.urlsafe_b64encode(json.dumps(header).encode()).rstrip(b'=').decode()
+        payload_b64 = base64.urlsafe_b64encode(json.dumps(payload).encode()).rstrip(b'=').decode()
+        
+        # Create signature
+        message = f"{header_b64}.{payload_b64}"
+        signature = hmac.new(
+            self.jwt_secret.encode(),
+            message.encode(),
+            hashlib.sha256
+        ).digest()
+        signature_b64 = base64.urlsafe_b64encode(signature).rstrip(b'=').decode()
+        
+        return f"{header_b64}.{payload_b64}.{signature_b64}"
     
     def verify_token(self, token: str) -> Optional[Dict[str, Any]]:
-        """Verify simple token (placeholder for JWT)"""
+        """Verify JWT token"""
+        import json
         try:
             parts = token.split('.')
-            if len(parts) != 2:
+            if len(parts) != 3:
                 return None
             
-            data_str = base64.b64decode(parts[0]).decode()
-            # Simple validation - in production use proper JWT
-            if parts[1] != self.jwt_secret:
+            header_b64, payload_b64, signature_b64 = parts
+            
+            # Verify signature
+            message = f"{header_b64}.{payload_b64}"
+            expected_signature = hmac.new(
+                self.jwt_secret.encode(),
+                message.encode(),
+                hashlib.sha256
+            ).digest()
+            expected_signature_b64 = base64.urlsafe_b64encode(expected_signature).rstrip(b'=').decode()
+            
+            if not hmac.compare_digest(signature_b64, expected_signature_b64):
                 return None
             
-            # Parse the data (this is simplified)
-            import ast
-            data = ast.literal_eval(data_str)
+            # Decode payload
+            payload_padded = payload_b64 + '=' * (4 - len(payload_b64) % 4)
+            payload_json = base64.urlsafe_b64decode(payload_padded).decode()
+            payload = json.loads(payload_json)
             
             # Check expiration
-            if data.get("exp", 0) < datetime.utcnow().timestamp():
+            if payload.get("exp", 0) < datetime.utcnow().timestamp():
                 logger.warning("Token expired")
                 return None
             
-            return data
+            return payload
         except Exception as e:
             logger.warning("Invalid token", error=str(e))
             return None
@@ -135,6 +188,27 @@ class SecurityUtils:
         return f"rate_limit:{action}:{identifier}"
     
     def check_rate_limit(self, identifier: str, action: str, limit: int, window: int) -> bool:
-        """Check rate limit (placeholder)"""
-        # In production, implement with Redis
+        """Check rate limit with in-memory storage"""
+        import time
+        from collections import defaultdict
+        
+        # In-memory rate limiting (in production, use Redis)
+        if not hasattr(self, '_rate_limit_store'):
+            self._rate_limit_store = defaultdict(list)
+        
+        key = f"{action}:{identifier}"
+        now = time.time()
+        
+        # Clean old entries
+        self._rate_limit_store[key] = [
+            timestamp for timestamp in self._rate_limit_store[key]
+            if now - timestamp < window
+        ]
+        
+        # Check if limit exceeded
+        if len(self._rate_limit_store[key]) >= limit:
+            return False
+        
+        # Add current request
+        self._rate_limit_store[key].append(now)
         return True 
