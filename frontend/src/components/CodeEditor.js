@@ -1,21 +1,80 @@
 import React, { useState, useEffect } from 'react';
 import AceEditor from 'react-ace';
-import { Box, Typography, FormControl, InputLabel, Select, MenuItem, Paper } from '@mui/material';
+import { Box, FormControl, InputLabel, Select, MenuItem, Paper } from '@mui/material';
+import { languageExamples } from './languageExamples';
 
 // Import Ace Editor modes for different languages
 import 'ace-builds/src-noconflict/mode-python';
 import 'ace-builds/src-noconflict/mode-javascript';
 import 'ace-builds/src-noconflict/mode-java';
 import 'ace-builds/src-noconflict/mode-c_cpp';
-import 'ace-builds/src-noconflict/mode-csharp';
-import 'ace-builds/src-noconflict/mode-go';
-import 'ace-builds/src-noconflict/mode-rust';
 import 'ace-builds/src-noconflict/mode-php';
-import 'ace-builds/src-noconflict/mode-ruby';
 import 'ace-builds/src-noconflict/mode-sql';
 import 'ace-builds/src-noconflict/mode-html';
 import 'ace-builds/src-noconflict/mode-css';
 import 'ace-builds/src-noconflict/mode-typescript';
+import 'ace-builds/src-noconflict/mode-csharp';
+import 'ace-builds/src-noconflict/mode-go';
+import 'ace-builds/src-noconflict/mode-rust';
+import 'ace-builds/src-noconflict/mode-ruby';
+import 'ace-builds/src-noconflict/mode-scala';
+import 'ace-builds/src-noconflict/mode-kotlin';
+import 'ace-builds/src-noconflict/mode-swift';
+import 'ace-builds/src-noconflict/mode-dart';
+import 'ace-builds/src-noconflict/mode-r';
+import 'ace-builds/src-noconflict/mode-matlab';
+import 'ace-builds/src-noconflict/mode-julia';
+import 'ace-builds/src-noconflict/mode-haskell';
+import 'ace-builds/src-noconflict/mode-clojure';
+import 'ace-builds/src-noconflict/mode-elixir';
+import 'ace-builds/src-noconflict/mode-erlang';
+import 'ace-builds/src-noconflict/mode-fsharp';
+import 'ace-builds/src-noconflict/mode-ocaml';
+import 'ace-builds/src-noconflict/mode-perl';
+import 'ace-builds/src-noconflict/mode-lua';
+import 'ace-builds/src-noconflict/mode-nim';
+import 'ace-builds/src-noconflict/mode-crystal';
+import 'ace-builds/src-noconflict/mode-d';
+import 'ace-builds/src-noconflict/mode-zig';
+import 'ace-builds/src-noconflict/mode-v';
+import 'ace-builds/src-noconflict/mode-odin';
+import 'ace-builds/src-noconflict/mode-j';
+import 'ace-builds/src-noconflict/mode-racket';
+import 'ace-builds/src-noconflict/mode-scheme';
+import 'ace-builds/src-noconflict/mode-common_lisp';
+import 'ace-builds/src-noconflict/mode-coffeescript';
+import 'ace-builds/src-noconflict/mode-livescript';
+import 'ace-builds/src-noconflict/mode-elm';
+import 'ace-builds/src-noconflict/mode-purescript';
+import 'ace-builds/src-noconflict/mode-reason';
+import 'ace-builds/src-noconflict/mode-nimrod';
+import 'ace-builds/src-noconflict/mode-cobol';
+import 'ace-builds/src-noconflict/mode-fortran';
+import 'ace-builds/src-noconflict/mode-pascal';
+import 'ace-builds/src-noconflict/mode-ada';
+import 'ace-builds/src-noconflict/mode-assembly_x86';
+import 'ace-builds/src-noconflict/mode-assembly_6502';
+import 'ace-builds/src-noconflict/mode-assembly_arm';
+import 'ace-builds/src-noconflict/mode-verilog';
+import 'ace-builds/src-noconflict/mode-vhdl';
+import 'ace-builds/src-noconflict/mode-tcl';
+import 'ace-builds/src-noconflict/mode-groovy';
+import 'ace-builds/src-noconflict/mode-gradle';
+import 'ace-builds/src-noconflict/mode-maven';
+import 'ace-builds/src-noconflict/mode-xml';
+import 'ace-builds/src-noconflict/mode-json';
+import 'ace-builds/src-noconflict/mode-yaml';
+import 'ace-builds/src-noconflict/mode-toml';
+import 'ace-builds/src-noconflict/mode-ini';
+import 'ace-builds/src-noconflict/mode-properties';
+import 'ace-builds/src-noconflict/mode-dockerfile';
+import 'ace-builds/src-noconflict/mode-sh';
+import 'ace-builds/src-noconflict/mode-batchfile';
+import 'ace-builds/src-noconflict/mode-makefile';
+import 'ace-builds/src-noconflict/mode-diff';
+import 'ace-builds/src-noconflict/mode-gitignore';
+import 'ace-builds/src-noconflict/mode-markdown';
+import 'ace-builds/src-noconflict/mode-text';
 
 // Import Ace Editor themes
 import 'ace-builds/src-noconflict/theme-monokai';
@@ -35,20 +94,94 @@ import 'ace-builds/src-noconflict/ext-searchbox';
 import 'ace-builds/src-noconflict/ext-spellcheck';
 
 const languageModes = {
+  // Core DSA Languages
   python: 'python',
   javascript: 'javascript',
   java: 'java',
   cpp: 'c_cpp',
   c: 'c_cpp',
   csharp: 'csharp',
-  go: 'go',
+  go: 'golang',
   rust: 'rust',
   php: 'php',
   ruby: 'ruby',
   sql: 'sql',
   html: 'html',
   css: 'css',
-  typescript: 'typescript'
+  typescript: 'typescript',
+  
+  // Modern Languages
+  scala: 'scala',
+  kotlin: 'kotlin',
+  swift: 'swift',
+  dart: 'dart',
+  r: 'r',
+  matlab: 'matlab',
+  julia: 'julia',
+  
+  // Functional Languages
+  haskell: 'haskell',
+  clojure: 'clojure',
+  elixir: 'elixir',
+  erlang: 'erlang',
+  fsharp: 'fsharp',
+  ocaml: 'ocaml',
+  elm: 'elm',
+  purescript: 'purescript',
+  reason: 'reason',
+  
+  // Scripting Languages
+  perl: 'perl',
+  lua: 'lua',
+  nim: 'nimrod',
+  crystal: 'crystal',
+  coffeescript: 'coffeescript',
+  livescript: 'livescript',
+  
+  // Systems Languages
+  d: 'd',
+  zig: 'zig',
+  v: 'v',
+  odin: 'odin',
+  j: 'j',
+  
+  // Lisp Family
+  racket: 'racket',
+  scheme: 'scheme',
+  common_lisp: 'common_lisp',
+  
+  // Legacy Languages
+  cobol: 'cobol',
+  fortran: 'fortran',
+  pascal: 'pascal',
+  ada: 'ada',
+  
+  // Assembly Languages
+  assembly_x86: 'assembly_x86',
+  assembly_6502: 'assembly_6502',
+  assembly_arm: 'assembly_arm',
+  
+  // Hardware Description
+  verilog: 'verilog',
+  vhdl: 'vhdl',
+  
+  // Configuration & Build
+  xml: 'xml',
+  json: 'json',
+  yaml: 'yaml',
+  toml: 'toml',
+  ini: 'ini',
+  properties: 'properties',
+  dockerfile: 'dockerfile',
+  sh: 'sh',
+  batchfile: 'batchfile',
+  makefile: 'makefile',
+  diff: 'diff',
+  gitignore: 'gitignore',
+  markdown: 'markdown',
+  
+  // Fallback
+  text: 'text'
 };
 
 const themes = [
@@ -64,461 +197,7 @@ const themes = [
   { value: 'terminal', label: 'Terminal (Dark)' }
 ];
 
-const languageExamples = {
-  python: `def fibonacci(n):
-    """Calculate the nth Fibonacci number"""
-    if n <= 1:
-        return n
-    return fibonacci(n-1) + fibonacci(n-2)
 
-def bubble_sort(arr):
-    """Sort array using bubble sort algorithm"""
-    n = len(arr)
-    for i in range(n):
-        for j in range(0, n-i-1):
-            if arr[j] > arr[j+1]:
-                arr[j], arr[j+1] = arr[j+1], arr[j]
-    return arr
-
-# Example usage
-print(fibonacci(10))
-print(bubble_sort([64, 34, 25, 12, 22, 11, 90]))`,
-  
-  javascript: `function fibonacci(n) {
-    // Calculate the nth Fibonacci number
-    if (n <= 1) return n;
-    return fibonacci(n - 1) + fibonacci(n - 2);
-}
-
-function bubbleSort(arr) {
-    // Sort array using bubble sort algorithm
-    const n = arr.length;
-    for (let i = 0; i < n; i++) {
-        for (let j = 0; j < n - i - 1; j++) {
-            if (arr[j] > arr[j + 1]) {
-                [arr[j], arr[j + 1]] = [arr[j + 1], arr[j]];
-            }
-        }
-    }
-    return arr;
-}
-
-// Example usage
-console.log(fibonacci(10));
-console.log(bubbleSort([64, 34, 25, 12, 22, 11, 90]));`,
-  
-  java: `public class Algorithms {
-    // Calculate the nth Fibonacci number
-    public static int fibonacci(int n) {
-        if (n <= 1) return n;
-        return fibonacci(n - 1) + fibonacci(n - 2);
-    }
-    
-    // Sort array using bubble sort algorithm
-    public static void bubbleSort(int[] arr) {
-        int n = arr.length;
-        for (int i = 0; i < n; i++) {
-            for (int j = 0; j < n - i - 1; j++) {
-                if (arr[j] > arr[j + 1]) {
-                    int temp = arr[j];
-                    arr[j] = arr[j + 1];
-                    arr[j + 1] = temp;
-                }
-            }
-        }
-    }
-    
-    public static void main(String[] args) {
-        System.out.println(fibonacci(10));
-        int[] arr = {64, 34, 25, 12, 22, 11, 90};
-        bubbleSort(arr);
-        for (int num : arr) {
-            System.out.print(num + " ");
-        }
-    }
-}`,
-  
-  cpp: `#include <iostream>
-#include <vector>
-using namespace std;
-
-// Calculate the nth Fibonacci number
-int fibonacci(int n) {
-    if (n <= 1) return n;
-    return fibonacci(n - 1) + fibonacci(n - 2);
-}
-
-// Sort array using bubble sort algorithm
-void bubbleSort(vector<int>& arr) {
-    int n = arr.size();
-    for (int i = 0; i < n; i++) {
-        for (int j = 0; j < n - i - 1; j++) {
-            if (arr[j] > arr[j + 1]) {
-                swap(arr[j], arr[j + 1]);
-            }
-        }
-    }
-}
-
-int main() {
-    cout << fibonacci(10) << endl;
-    vector<int> arr = {64, 34, 25, 12, 22, 11, 90};
-    bubbleSort(arr);
-    for (int num : arr) {
-        cout << num << " ";
-    }
-    return 0;
-}`,
-  
-  c: `#include <stdio.h>
-
-// Calculate the nth Fibonacci number
-int fibonacci(int n) {
-    if (n <= 1) return n;
-    return fibonacci(n - 1) + fibonacci(n - 2);
-}
-
-// Sort array using bubble sort algorithm
-void bubbleSort(int arr[], int n) {
-    for (int i = 0; i < n; i++) {
-        for (int j = 0; j < n - i - 1; j++) {
-            if (arr[j] > arr[j + 1]) {
-                int temp = arr[j];
-                arr[j] = arr[j + 1];
-                arr[j + 1] = temp;
-            }
-        }
-    }
-}
-
-int main() {
-    printf("%d\\n", fibonacci(10));
-    int arr[] = {64, 34, 25, 12, 22, 11, 90};
-    int n = sizeof(arr) / sizeof(arr[0]);
-    bubbleSort(arr, n);
-    for (int i = 0; i < n; i++) {
-        printf("%d ", arr[i]);
-    }
-    return 0;
-}`,
-  
-  go: `package main
-
-import "fmt"
-
-// Calculate the nth Fibonacci number
-func fibonacci(n int) int {
-    if n <= 1 {
-        return n
-    }
-    return fibonacci(n-1) + fibonacci(n-2)
-}
-
-// Sort array using bubble sort algorithm
-func bubbleSort(arr []int) []int {
-    n := len(arr)
-    for i := 0; i < n; i++ {
-        for j := 0; j < n-i-1; j++ {
-            if arr[j] > arr[j+1] {
-                arr[j], arr[j+1] = arr[j+1], arr[j]
-            }
-        }
-    }
-    return arr
-}
-
-func main() {
-    fmt.Println(fibonacci(10))
-    arr := []int{64, 34, 25, 12, 22, 11, 90}
-    bubbleSort(arr)
-    fmt.Println(arr)
-}`,
-  
-  rust: `fn fibonacci(n: u32) -> u32 {
-    // Calculate the nth Fibonacci number
-    if n <= 1 {
-        return n;
-    }
-    fibonacci(n - 1) + fibonacci(n - 2)
-}
-
-fn bubble_sort(arr: &mut [i32]) {
-    // Sort array using bubble sort algorithm
-    let n = arr.len();
-    for i in 0..n {
-        for j in 0..n - i - 1 {
-            if arr[j] > arr[j + 1] {
-                arr.swap(j, j + 1);
-            }
-        }
-    }
-}
-
-fn main() {
-    println!("{}", fibonacci(10));
-    let mut arr = [64, 34, 25, 12, 22, 11, 90];
-    bubble_sort(&mut arr);
-    println!("{:?}", arr);
-}`,
-  
-  php: `<?php
-
-// Calculate the nth Fibonacci number
-function fibonacci($n) {
-    if ($n <= 1) return $n;
-    return fibonacci($n - 1) + fibonacci($n - 2);
-}
-
-// Sort array using bubble sort algorithm
-function bubbleSort(&$arr) {
-    $n = count($arr);
-    for ($i = 0; $i < $n; $i++) {
-        for ($j = 0; $j < $n - $i - 1; $j++) {
-            if ($arr[$j] > $arr[$j + 1]) {
-                $temp = $arr[$j];
-                $arr[$j] = $arr[$j + 1];
-                $arr[$j + 1] = $temp;
-            }
-        }
-    }
-}
-
-// Example usage
-echo fibonacci(10) . "\\n";
-$arr = [64, 34, 25, 12, 22, 11, 90];
-bubbleSort($arr);
-echo implode(" ", $arr) . "\\n";
-
-?>`,
-  
-  ruby: `# Calculate the nth Fibonacci number
-def fibonacci(n)
-  return n if n <= 1
-  fibonacci(n - 1) + fibonacci(n - 2)
-end
-
-# Sort array using bubble sort algorithm
-def bubble_sort(arr)
-  n = arr.length
-  (0...n).each do |i|
-    (0...n - i - 1).each do |j|
-      if arr[j] > arr[j + 1]
-        arr[j], arr[j + 1] = arr[j + 1], arr[j]
-      end
-    end
-  end
-  arr
-end
-
-# Example usage
-puts fibonacci(10)
-puts bubble_sort([64, 34, 25, 12, 22, 11, 90]).join(" ")`,
-  
-  sql: `-- Create a table for storing numbers
-CREATE TABLE numbers (
-    id INT PRIMARY KEY,
-    value INT NOT NULL
-);
-
--- Insert sample data
-INSERT INTO numbers (id, value) VALUES 
-(1, 64), (2, 34), (3, 25), (4, 12), (5, 22), (6, 11), (7, 90);
-
--- Sort numbers in ascending order
-SELECT value 
-FROM numbers 
-ORDER BY value ASC;
-
--- Find the maximum value
-SELECT MAX(value) as max_value FROM numbers;
-
--- Find the minimum value
-SELECT MIN(value) as min_value FROM numbers;
-
--- Calculate average
-SELECT AVG(value) as average_value FROM numbers;`,
-  
-  html: `<!DOCTYPE html>
-<html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>DSA Code Analysis</title>
-    <style>
-        body {
-            font-family: Arial, sans-serif;
-            margin: 20px;
-            background-color: #f5f5f5;
-        }
-        .container {
-            max-width: 800px;
-            margin: 0 auto;
-            background: white;
-            padding: 20px;
-            border-radius: 8px;
-            box-shadow: 0 2px 10px rgba(0,0,0,0.1);
-        }
-        .algorithm {
-            margin: 20px 0;
-            padding: 15px;
-            border: 1px solid #ddd;
-            border-radius: 5px;
-        }
-    </style>
-</head>
-<body>
-    <div class="container">
-        <h1>Data Structures & Algorithms</h1>
-        
-        <div class="algorithm">
-            <h2>Fibonacci Sequence</h2>
-            <p>Calculate the nth Fibonacci number</p>
-            <pre><code>function fibonacci(n) {
-    if (n <= 1) return n;
-    return fibonacci(n-1) + fibonacci(n-2);
-}</code></pre>
-        </div>
-        
-        <div class="algorithm">
-            <h2>Bubble Sort</h2>
-            <p>Sort an array using bubble sort algorithm</p>
-            <pre><code>function bubbleSort(arr) {
-    const n = arr.length;
-    for (let i = 0; i < n; i++) {
-        for (let j = 0; j < n-i-1; j++) {
-            if (arr[j] > arr[j+1]) {
-                [arr[j], arr[j+1]] = [arr[j+1], arr[j]];
-            }
-        }
-    }
-    return arr;
-}</code></pre>
-        </div>
-    </div>
-</body>
-</html>`,
-  
-  css: `/* Modern CSS for DSA Code Analysis Platform */
-
-/* Reset and base styles */
-* {
-    margin: 0;
-    padding: 0;
-    box-sizing: border-box;
-}
-
-body {
-    font-family: 'Inter', -apple-system, BlinkMacSystemFont, sans-serif;
-    line-height: 1.6;
-    color: #333;
-    background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
-    min-height: 100vh;
-}
-
-/* Container styles */
-.container {
-    max-width: 1200px;
-    margin: 0 auto;
-    padding: 20px;
-}
-
-/* Card styles */
-.card {
-    background: white;
-    border-radius: 12px;
-    box-shadow: 0 8px 32px rgba(0,0,0,0.1);
-    padding: 24px;
-    margin: 16px 0;
-    transition: transform 0.2s ease, box-shadow 0.2s ease;
-}
-
-.card:hover {
-    transform: translateY(-2px);
-    box-shadow: 0 12px 40px rgba(0,0,0,0.15);
-}
-
-/* Button styles */
-.btn {
-    background: linear-gradient(45deg, #667eea, #764ba2);
-    color: white;
-    border: none;
-    padding: 12px 24px;
-    border-radius: 8px;
-    cursor: pointer;
-    font-weight: 600;
-    transition: all 0.2s ease;
-}
-
-.btn:hover {
-    transform: translateY(-1px);
-    box-shadow: 0 4px 12px rgba(102, 126, 234, 0.4);
-}
-
-/* Code editor styles */
-.code-editor {
-    border: 2px solid #e1e5e9;
-    border-radius: 8px;
-    overflow: hidden;
-    background: #1e1e1e;
-}
-
-/* Responsive design */
-@media (max-width: 768px) {
-    .container {
-        padding: 10px;
-    }
-    
-    .card {
-        padding: 16px;
-        margin: 8px 0;
-    }
-}`,
-  
-  typescript: `// TypeScript implementation of common algorithms
-
-interface SortableArray<T> {
-    data: T[];
-    length: number;
-}
-
-// Calculate the nth Fibonacci number
-function fibonacci(n: number): number {
-    if (n <= 1) return n;
-    return fibonacci(n - 1) + fibonacci(n - 2);
-}
-
-// Sort array using bubble sort algorithm
-function bubbleSort<T extends number>(arr: T[]): T[] {
-    const n = arr.length;
-    for (let i = 0; i < n; i++) {
-        for (let j = 0; j < n - i - 1; j++) {
-            if (arr[j] > arr[j + 1]) {
-                [arr[j], arr[j + 1]] = [arr[j + 1], arr[j]];
-            }
-        }
-    }
-    return arr;
-}
-
-// Binary search implementation
-function binarySearch<T>(arr: T[], target: T): number {
-    let left = 0;
-    let right = arr.length - 1;
-    
-    while (left <= right) {
-        const mid = Math.floor((left + right) / 2);
-        if (arr[mid] === target) return mid;
-        if (arr[mid] < target) left = mid + 1;
-        else right = mid - 1;
-    }
-    return -1;
-}
-
-// Example usage
-console.log(fibonacci(10));
-console.log(bubbleSort([64, 34, 25, 12, 22, 11, 90]));
-console.log(binarySearch([1, 2, 3, 4, 5, 6, 7, 8, 9, 10], 7));`
-};
 
 export default function CodeEditor({ 
   value, 
@@ -581,19 +260,30 @@ export default function CodeEditor({
               onChange={handleLanguageChange}
               size="small"
             >
-              <MenuItem value="python">Python</MenuItem>
-              <MenuItem value="javascript">JavaScript</MenuItem>
-              <MenuItem value="java">Java</MenuItem>
-              <MenuItem value="cpp">C++</MenuItem>
-              <MenuItem value="c">C</MenuItem>
-              <MenuItem value="go">Go</MenuItem>
-              <MenuItem value="rust">Rust</MenuItem>
-              <MenuItem value="php">PHP</MenuItem>
-              <MenuItem value="ruby">Ruby</MenuItem>
-              <MenuItem value="sql">SQL</MenuItem>
-              <MenuItem value="html">HTML</MenuItem>
-              <MenuItem value="css">CSS</MenuItem>
-              <MenuItem value="typescript">TypeScript</MenuItem>
+                             <MenuItem value="python">Python</MenuItem>
+               <MenuItem value="javascript">JavaScript</MenuItem>
+               <MenuItem value="java">Java</MenuItem>
+               <MenuItem value="cpp">C++</MenuItem>
+               <MenuItem value="c">C</MenuItem>
+               <MenuItem value="csharp">C#</MenuItem>
+               <MenuItem value="go">Go</MenuItem>
+               <MenuItem value="rust">Rust</MenuItem>
+               <MenuItem value="php">PHP</MenuItem>
+               <MenuItem value="ruby">Ruby</MenuItem>
+               <MenuItem value="sql">SQL</MenuItem>
+               <MenuItem value="html">HTML</MenuItem>
+               <MenuItem value="css">CSS</MenuItem>
+               <MenuItem value="typescript">TypeScript</MenuItem>
+               <MenuItem value="scala">Scala</MenuItem>
+               <MenuItem value="kotlin">Kotlin</MenuItem>
+               <MenuItem value="swift">Swift</MenuItem>
+               <MenuItem value="haskell">Haskell</MenuItem>
+               <MenuItem value="clojure">Clojure</MenuItem>
+               <MenuItem value="perl">Perl</MenuItem>
+               <MenuItem value="lua">Lua</MenuItem>
+               <MenuItem value="assembly_x86">Assembly (x86)</MenuItem>
+               <MenuItem value="json">JSON</MenuItem>
+               <MenuItem value="text">Text</MenuItem>
             </Select>
           </FormControl>
         )}
