@@ -1,6 +1,6 @@
 # 🚀 DSA Code Analysis Platform
 
-A comprehensive, FAANG-ready platform for analyzing Data Structures and Algorithms code with real-time visualizations, complexity analysis, and AI-powered insights.
+A comprehensive platform for analyzing Data Structures and Algorithms code with real-time visualizations, complexity analysis, and AI-powered insights.
 
 ## ✨ Features
 
