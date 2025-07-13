@@ -8,6 +8,7 @@ from pydantic import BaseModel
 import asyncio
 import json
 from datetime import datetime, timedelta
+from fastapi.security import HTTPAuthorizationCredentials
 
 from app.services.mock_analysis_service import (
     MockCodeAnalyzer as CodeAnalyzer,
@@ -16,13 +17,42 @@ from app.services.mock_analysis_service import (
     MockOptimizationService as OptimizationService,
     MockVisualizationService as VisualizationService
 )
-from app.core.security import get_current_user
+from app.core.security import get_security, security
 from app.models.user import User
 from app.models.analysis import Analysis
 from app.core.database import get_db
 from sqlalchemy.orm import Session
 
 router = APIRouter()
+
+# Custom dependency for optional authentication
+async def get_optional_user(
+    credentials: Optional[HTTPAuthorizationCredentials] = Depends(security)
+) -> Optional[User]:
+    """Get current user if authenticated, otherwise return None"""
+    if not credentials:
+        return None
+    
+    try:
+        security_utils = get_security()
+        payload = security_utils.verify_token(credentials.credentials)
+        
+        if payload is None:
+            return None
+        
+        user_id = payload.get("sub")
+        if user_id is None:
+            return None
+        
+        # For now, return a mock user object
+        # In a real implementation, you would fetch from database
+        return User(
+            id=user_id,
+            email=payload.get("email"),
+            username=payload.get("username")
+        )
+    except Exception:
+        return None
 
 class CodeAnalysisRequest(BaseModel):
     code: str
@@ -62,7 +92,7 @@ class AIInsightRequest(BaseModel):
 async def analyze_code(
     request: CodeAnalysisRequest,
     background_tasks: BackgroundTasks,
-    current_user: Optional[User] = Depends(get_current_user),
+    current_user: Optional[User] = Depends(get_optional_user),
     db: Session = Depends(get_db)
 ):
     """
@@ -149,7 +179,7 @@ async def analyze_code(
 @router.post("/batch-analyze")
 async def batch_analyze(
     request: BatchAnalysisRequest,
-    current_user: User = Depends(get_current_user),
+    current_user: User = Depends(get_optional_user), # Changed to get_optional_user
     db: Session = Depends(get_db)
 ):
     """
@@ -199,7 +229,7 @@ async def batch_analyze(
 @router.post("/ai-insights")
 async def get_ai_insights(
     request: AIInsightRequest,
-    current_user: User = Depends(get_current_user)
+    current_user: User = Depends(get_optional_user) # Changed to get_optional_user
 ):
     """
     Get AI-powered insights for code
@@ -225,7 +255,7 @@ async def get_ai_insights(
 @router.post("/learning-recommendations")
 async def get_learning_recommendations(
     request: LearningRecommendationRequest,
-    current_user: User = Depends(get_current_user)
+    current_user: User = Depends(get_optional_user) # Changed to get_optional_user
 ):
     """
     Get personalized learning recommendations
@@ -252,7 +282,7 @@ async def get_learning_recommendations(
 @router.post("/performance-analysis")
 async def get_performance_analysis(
     request: PerformanceAnalysisRequest,
-    current_user: User = Depends(get_current_user),
+    current_user: User = Depends(get_optional_user), # Changed to get_optional_user
     db: Session = Depends(get_db)
 ):
     """
@@ -314,7 +344,7 @@ async def get_performance_analysis(
 @router.get("/user/{user_id}/analytics")
 async def get_user_analytics(
     user_id: int,
-    current_user: User = Depends(get_current_user),
+    current_user: User = Depends(get_optional_user), # Changed to get_optional_user
     db: Session = Depends(get_db)
 ):
     """
@@ -367,7 +397,7 @@ async def get_user_analytics(
 
 @router.get("/trending-topics")
 async def get_trending_topics(
-    current_user: User = Depends(get_current_user),
+    current_user: User = Depends(get_optional_user), # Changed to get_optional_user
     db: Session = Depends(get_db)
 ):
     """
