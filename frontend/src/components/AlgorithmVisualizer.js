@@ -1,25 +1,29 @@
 import React, { useState, useEffect, useCallback } from 'react';
-import { 
-  Box, 
-  Typography, 
-  Card, 
-  CardContent, 
+import {
+  Box,
+  Typography,
+  Card,
+  CardContent,
   Grid,
   Chip,
   Slider,
   IconButton,
-  Paper
+  Paper,
 } from '@mui/material';
-import { 
-  PlayArrow, 
-  Pause, 
-  SkipNext, 
-  SkipPrevious, 
+import {
+  PlayArrow,
+  Pause,
+  SkipNext,
+  SkipPrevious,
   RestartAlt,
-  Speed
+  Speed,
 } from '@mui/icons-material';
 
-export default function AlgorithmVisualizer({ algorithmType, data, trace = [] }) {
+export default function AlgorithmVisualizer({
+  algorithmType,
+  data,
+  trace = [],
+}) {
   const [currentStep, setCurrentStep] = useState(0);
   const [isPlaying, setIsPlaying] = useState(false);
   const [playbackSpeed, setPlaybackSpeed] = useState(1000);
@@ -28,7 +32,7 @@ export default function AlgorithmVisualizer({ algorithmType, data, trace = [] })
   const generateSortingAnimation = (trace) => {
     const steps = [];
     let currentArray = [];
-    
+
     for (const step of trace) {
       if (step.locals) {
         // Look for array variables
@@ -39,13 +43,13 @@ export default function AlgorithmVisualizer({ algorithmType, data, trace = [] })
               array: currentArray,
               step: step.line,
               code: step.code_line,
-              highlighted: []
+              highlighted: [],
             });
           }
         }
       }
     }
-    
+
     return steps;
   };
 
@@ -53,7 +57,7 @@ export default function AlgorithmVisualizer({ algorithmType, data, trace = [] })
     const steps = [];
     let currentArray = [];
     let target = null;
-    
+
     for (const step of trace) {
       if (step.locals) {
         for (const [key, value] of Object.entries(step.locals)) {
@@ -63,25 +67,25 @@ export default function AlgorithmVisualizer({ algorithmType, data, trace = [] })
             target = value;
           }
         }
-        
+
         if (currentArray.length > 0) {
           steps.push({
             array: currentArray,
             target: target,
             step: step.line,
             code: step.code_line,
-            highlighted: []
+            highlighted: [],
           });
         }
       }
     }
-    
+
     return steps;
   };
 
   const generateGraphAnimation = (trace) => {
     const steps = [];
-    
+
     for (const step of trace) {
       if (step.data_structures) {
         for (const [, structure] of Object.entries(step.data_structures)) {
@@ -91,19 +95,19 @@ export default function AlgorithmVisualizer({ algorithmType, data, trace = [] })
               edges: structure.data.edges,
               step: step.line,
               code: step.code_line,
-              visited: []
+              visited: [],
             });
           }
         }
       }
     }
-    
+
     return steps;
   };
 
   const generateTreeAnimation = (trace) => {
     const steps = [];
-    
+
     for (const step of trace) {
       if (step.data_structures) {
         for (const [, structure] of Object.entries(step.data_structures)) {
@@ -112,13 +116,13 @@ export default function AlgorithmVisualizer({ algorithmType, data, trace = [] })
               tree: structure.data,
               step: step.line,
               code: step.code_line,
-              visited: []
+              visited: [],
             });
           }
         }
       }
     }
-    
+
     return steps;
   };
 
@@ -147,7 +151,7 @@ export default function AlgorithmVisualizer({ algorithmType, data, trace = [] })
     let interval;
     if (isPlaying && animationData && currentStep < animationData.length - 1) {
       interval = setInterval(() => {
-        setCurrentStep(prev => {
+        setCurrentStep((prev) => {
           if (prev >= animationData.length - 1) {
             setIsPlaying(false);
             return prev;
@@ -205,9 +209,13 @@ export default function AlgorithmVisualizer({ algorithmType, data, trace = [] })
                   display: 'flex',
                   alignItems: 'center',
                   justifyContent: 'center',
-                  backgroundColor: stepData.highlighted.includes(index) ? '#E3F2FD' : '#fff',
-                  fontWeight: stepData.highlighted.includes(index) ? 'bold' : 'normal',
-                  fontSize: '0.875rem'
+                  backgroundColor: stepData.highlighted.includes(index)
+                    ? '#E3F2FD'
+                    : '#fff',
+                  fontWeight: stepData.highlighted.includes(index)
+                    ? 'bold'
+                    : 'normal',
+                  fontSize: '0.875rem',
                 }}
               >
                 {value}
@@ -243,9 +251,10 @@ export default function AlgorithmVisualizer({ algorithmType, data, trace = [] })
                   display: 'flex',
                   alignItems: 'center',
                   justifyContent: 'center',
-                  backgroundColor: value === stepData.target ? '#FFCDD2' : '#fff',
+                  backgroundColor:
+                    value === stepData.target ? '#FFCDD2' : '#fff',
                   fontWeight: value === stepData.target ? 'bold' : 'normal',
-                  fontSize: '0.875rem'
+                  fontSize: '0.875rem',
                 }}
               >
                 {value}
@@ -286,9 +295,13 @@ export default function AlgorithmVisualizer({ algorithmType, data, trace = [] })
                   display: 'flex',
                   alignItems: 'center',
                   justifyContent: 'center',
-                  backgroundColor: stepData.visited.includes(node) ? '#C8E6C9' : '#fff',
-                  fontWeight: stepData.visited.includes(node) ? 'bold' : 'normal',
-                  fontSize: '0.875rem'
+                  backgroundColor: stepData.visited.includes(node)
+                    ? '#C8E6C9'
+                    : '#fff',
+                  fontWeight: stepData.visited.includes(node)
+                    ? 'bold'
+                    : 'normal',
+                  fontSize: '0.875rem',
                 }}
               >
                 {node}
@@ -312,9 +325,22 @@ export default function AlgorithmVisualizer({ algorithmType, data, trace = [] })
           <Typography variant="h6" gutterBottom>
             Tree Traversal
           </Typography>
-          <Box sx={{ display: 'flex', flexDirection: 'column', alignItems: 'center', mb: 2 }}>
+          <Box
+            sx={{
+              display: 'flex',
+              flexDirection: 'column',
+              alignItems: 'center',
+              mb: 2,
+            }}
+          >
             {/* Simple tree representation */}
-            <Box sx={{ display: 'flex', flexDirection: 'column', alignItems: 'center' }}>
+            <Box
+              sx={{
+                display: 'flex',
+                flexDirection: 'column',
+                alignItems: 'center',
+              }}
+            >
               <Box
                 sx={{
                   width: '50px',
@@ -325,7 +351,7 @@ export default function AlgorithmVisualizer({ algorithmType, data, trace = [] })
                   alignItems: 'center',
                   justifyContent: 'center',
                   backgroundColor: '#FFF3E0',
-                  mb: 1
+                  mb: 1,
                 }}
               >
                 Root
@@ -341,7 +367,7 @@ export default function AlgorithmVisualizer({ algorithmType, data, trace = [] })
                     alignItems: 'center',
                     justifyContent: 'center',
                     backgroundColor: '#FFF3E0',
-                    fontSize: '0.75rem'
+                    fontSize: '0.75rem',
                   }}
                 >
                   L
@@ -356,7 +382,7 @@ export default function AlgorithmVisualizer({ algorithmType, data, trace = [] })
                     alignItems: 'center',
                     justifyContent: 'center',
                     backgroundColor: '#FFF3E0',
-                    fontSize: '0.75rem'
+                    fontSize: '0.75rem',
                   }}
                 >
                   R
@@ -389,14 +415,21 @@ export default function AlgorithmVisualizer({ algorithmType, data, trace = [] })
 
   return (
     <Box>
-      <Box sx={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', mb: 3 }}>
+      <Box
+        sx={{
+          display: 'flex',
+          alignItems: 'center',
+          justifyContent: 'space-between',
+          mb: 3,
+        }}
+      >
         <Typography variant="h5">
           {algorithmType.replace('_', ' ').toUpperCase()} Visualization
         </Typography>
-        <Chip 
-          label={`Step ${currentStep + 1} of ${animationData.length}`} 
-          color="primary" 
-          variant="outlined" 
+        <Chip
+          label={`Step ${currentStep + 1} of ${animationData.length}`}
+          color="primary"
+          variant="outlined"
         />
       </Box>
 
@@ -411,11 +444,16 @@ export default function AlgorithmVisualizer({ algorithmType, data, trace = [] })
         <IconButton onClick={handlePlayPause} color="primary">
           {isPlaying ? <Pause /> : <PlayArrow />}
         </IconButton>
-        <IconButton onClick={handleNext} disabled={currentStep === animationData.length - 1}>
+        <IconButton
+          onClick={handleNext}
+          disabled={currentStep === animationData.length - 1}
+        >
           <SkipNext />
         </IconButton>
-        
-        <Box sx={{ display: 'flex', alignItems: 'center', gap: 1, minWidth: 200 }}>
+
+        <Box
+          sx={{ display: 'flex', alignItems: 'center', gap: 1, minWidth: 200 }}
+        >
           <Speed fontSize="small" />
           <Slider
             value={playbackSpeed}
@@ -427,7 +465,7 @@ export default function AlgorithmVisualizer({ algorithmType, data, trace = [] })
               { value: 500, label: 'Fast' },
               { value: 1000, label: 'Normal' },
               { value: 2000, label: 'Slow' },
-              { value: 3000, label: 'Very Slow' }
+              { value: 3000, label: 'Very Slow' },
             ]}
             valueLabelDisplay="auto"
             valueLabelFormat={(value) => `${value}ms`}
@@ -438,10 +476,14 @@ export default function AlgorithmVisualizer({ algorithmType, data, trace = [] })
       {/* Algorithm-specific visualization */}
       <Grid container spacing={3}>
         <Grid item xs={12} md={8}>
-          {algorithmType === 'sorting' && renderSortingVisualization(currentStepData)}
-          {algorithmType === 'searching' && renderSearchingVisualization(currentStepData)}
-          {algorithmType === 'graph_traversal' && renderGraphVisualization(currentStepData)}
-          {algorithmType === 'tree_traversal' && renderTreeVisualization(currentStepData)}
+          {algorithmType === 'sorting' &&
+            renderSortingVisualization(currentStepData)}
+          {algorithmType === 'searching' &&
+            renderSearchingVisualization(currentStepData)}
+          {algorithmType === 'graph_traversal' &&
+            renderGraphVisualization(currentStepData)}
+          {algorithmType === 'tree_traversal' &&
+            renderTreeVisualization(currentStepData)}
         </Grid>
         <Grid item xs={12} md={4}>
           <Card variant="outlined">
@@ -455,13 +497,15 @@ export default function AlgorithmVisualizer({ algorithmType, data, trace = [] })
               <Typography variant="body2" gutterBottom>
                 <strong>Code:</strong>
               </Typography>
-              <Box sx={{ 
-                backgroundColor: '#f5f5f5', 
-                p: 1, 
-                borderRadius: 1,
-                fontFamily: 'monospace',
-                fontSize: '0.875rem'
-              }}>
+              <Box
+                sx={{
+                  backgroundColor: '#f5f5f5',
+                  p: 1,
+                  borderRadius: 1,
+                  fontFamily: 'monospace',
+                  fontSize: '0.875rem',
+                }}
+              >
                 {currentStepData?.code || 'No code available'}
               </Box>
             </CardContent>
@@ -470,4 +514,4 @@ export default function AlgorithmVisualizer({ algorithmType, data, trace = [] })
       </Grid>
     </Box>
   );
-} 
+}

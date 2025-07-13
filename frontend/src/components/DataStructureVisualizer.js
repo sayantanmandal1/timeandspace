@@ -1,16 +1,16 @@
 import React, { useState, useEffect } from 'react';
-import { 
-  Box, 
-  Typography, 
-  Paper, 
-  Card, 
-  CardContent, 
+import {
+  Box,
+  Typography,
+  Paper,
+  Card,
+  CardContent,
   Chip,
   Grid,
   List,
   ListItem,
   ListItemText,
-  Divider
+  Divider,
 } from '@mui/material';
 
 export default function DataStructureVisualizer({ dataStructures = {} }) {
@@ -22,29 +22,40 @@ export default function DataStructureVisualizer({ dataStructures = {} }) {
 
   const renderStack = (stack) => {
     if (!Array.isArray(stack)) return null;
-    
+
     return (
       <Card variant="outlined" sx={{ mb: 2 }}>
         <CardContent>
           <Typography variant="h6" gutterBottom>
             Stack
           </Typography>
-          <Box sx={{ display: 'flex', flexDirection: 'column-reverse', gap: 1 }}>
+          <Box
+            sx={{ display: 'flex', flexDirection: 'column-reverse', gap: 1 }}
+          >
             {stack.map((item, index) => (
-              <Paper 
-                key={index} 
-                sx={{ 
-                  p: 2, 
-                  backgroundColor: index === stack.length - 1 ? '#e3f2fd' : '#f5f5f5',
-                  border: index === stack.length - 1 ? '2px solid #2196f3' : '1px solid #e0e0e0',
-                  borderRadius: 1
+              <Paper
+                key={index}
+                sx={{
+                  p: 2,
+                  backgroundColor:
+                    index === stack.length - 1 ? '#e3f2fd' : '#f5f5f5',
+                  border:
+                    index === stack.length - 1
+                      ? '2px solid #2196f3'
+                      : '1px solid #e0e0e0',
+                  borderRadius: 1,
                 }}
               >
                 <Typography variant="body2" fontFamily="monospace">
                   {JSON.stringify(item)}
                 </Typography>
                 {index === stack.length - 1 && (
-                  <Chip label="TOP" size="small" color="primary" sx={{ mt: 1 }} />
+                  <Chip
+                    label="TOP"
+                    size="small"
+                    color="primary"
+                    sx={{ mt: 1 }}
+                  />
                 )}
               </Paper>
             ))}
@@ -56,7 +67,7 @@ export default function DataStructureVisualizer({ dataStructures = {} }) {
 
   const renderQueue = (queue) => {
     if (!Array.isArray(queue)) return null;
-    
+
     return (
       <Card variant="outlined" sx={{ mb: 2 }}>
         <CardContent>
@@ -65,25 +76,36 @@ export default function DataStructureVisualizer({ dataStructures = {} }) {
           </Typography>
           <Box sx={{ display: 'flex', gap: 1, alignItems: 'center' }}>
             {queue.map((item, index) => (
-              <Paper 
-                key={index} 
-                sx={{ 
-                  p: 2, 
+              <Paper
+                key={index}
+                sx={{
+                  p: 2,
                   backgroundColor: index === 0 ? '#e8f5e8' : '#f5f5f5',
-                  border: index === 0 ? '2px solid #4caf50' : '1px solid #e0e0e0',
+                  border:
+                    index === 0 ? '2px solid #4caf50' : '1px solid #e0e0e0',
                   borderRadius: 1,
                   minWidth: 60,
-                  textAlign: 'center'
+                  textAlign: 'center',
                 }}
               >
                 <Typography variant="body2" fontFamily="monospace">
                   {JSON.stringify(item)}
                 </Typography>
                 {index === 0 && (
-                  <Chip label="FRONT" size="small" color="success" sx={{ mt: 1 }} />
+                  <Chip
+                    label="FRONT"
+                    size="small"
+                    color="success"
+                    sx={{ mt: 1 }}
+                  />
                 )}
                 {index === queue.length - 1 && (
-                  <Chip label="BACK" size="small" color="secondary" sx={{ mt: 1 }} />
+                  <Chip
+                    label="BACK"
+                    size="small"
+                    color="secondary"
+                    sx={{ mt: 1 }}
+                  />
                 )}
               </Paper>
             ))}
@@ -95,7 +117,7 @@ export default function DataStructureVisualizer({ dataStructures = {} }) {
 
   const renderArray = (array) => {
     if (!Array.isArray(array)) return null;
-    
+
     return (
       <Card variant="outlined" sx={{ mb: 2 }}>
         <CardContent>
@@ -104,15 +126,15 @@ export default function DataStructureVisualizer({ dataStructures = {} }) {
           </Typography>
           <Box sx={{ display: 'flex', gap: 1, flexWrap: 'wrap' }}>
             {array.map((item, index) => (
-              <Paper 
-                key={index} 
-                sx={{ 
-                  p: 2, 
+              <Paper
+                key={index}
+                sx={{
+                  p: 2,
                   backgroundColor: '#f5f5f5',
                   border: '1px solid #e0e0e0',
                   borderRadius: 1,
                   minWidth: 60,
-                  textAlign: 'center'
+                  textAlign: 'center',
                 }}
               >
                 <Typography variant="caption" color="text.secondary">
@@ -131,7 +153,7 @@ export default function DataStructureVisualizer({ dataStructures = {} }) {
 
   const renderDictionary = (dict) => {
     if (typeof dict !== 'object' || Array.isArray(dict)) return null;
-    
+
     return (
       <Card variant="outlined" sx={{ mb: 2 }}>
         <CardContent>
@@ -144,7 +166,11 @@ export default function DataStructureVisualizer({ dataStructures = {} }) {
                 <ListItemText
                   primary={
                     <Box sx={{ display: 'flex', alignItems: 'center', gap: 1 }}>
-                      <Typography variant="body2" fontWeight="bold" color="primary">
+                      <Typography
+                        variant="body2"
+                        fontWeight="bold"
+                        color="primary"
+                      >
                         {key}:
                       </Typography>
                       <Typography variant="body2" fontFamily="monospace">
@@ -163,7 +189,7 @@ export default function DataStructureVisualizer({ dataStructures = {} }) {
 
   const renderGraph = (graph) => {
     if (!graph || typeof graph !== 'object') return null;
-    
+
     return (
       <Card variant="outlined" sx={{ mb: 2 }}>
         <CardContent>
@@ -175,12 +201,23 @@ export default function DataStructureVisualizer({ dataStructures = {} }) {
           </Typography>
           <Box sx={{ maxHeight: 200, overflow: 'auto' }}>
             {Object.entries(graph).map(([node, edges]) => (
-              <Box key={node} sx={{ mb: 1, p: 1, backgroundColor: '#f8f9fa', borderRadius: 1 }}>
+              <Box
+                key={node}
+                sx={{
+                  mb: 1,
+                  p: 1,
+                  backgroundColor: '#f8f9fa',
+                  borderRadius: 1,
+                }}
+              >
                 <Typography variant="body2" fontWeight="bold" color="primary">
                   Node {node}:
                 </Typography>
                 <Typography variant="body2" fontFamily="monospace">
-                  Edges: {Array.isArray(edges) ? edges.join(', ') : JSON.stringify(edges)}
+                  Edges:{' '}
+                  {Array.isArray(edges)
+                    ? edges.join(', ')
+                    : JSON.stringify(edges)}
                 </Typography>
               </Box>
             ))}
@@ -192,20 +229,20 @@ export default function DataStructureVisualizer({ dataStructures = {} }) {
 
   const renderTree = (tree) => {
     if (!tree || typeof tree !== 'object') return null;
-    
+
     const renderTreeNode = (node, level = 0) => {
       if (!node) return null;
-      
+
       return (
         <Box key={node.val || node.value || node} sx={{ ml: level * 2 }}>
-          <Paper 
-            sx={{ 
-              p: 1, 
-              mb: 1, 
+          <Paper
+            sx={{
+              p: 1,
+              mb: 1,
               backgroundColor: '#f5f5f5',
               border: '1px solid #e0e0e0',
               borderRadius: 1,
-              display: 'inline-block'
+              display: 'inline-block',
             }}
           >
             <Typography variant="body2" fontFamily="monospace">
@@ -217,7 +254,7 @@ export default function DataStructureVisualizer({ dataStructures = {} }) {
         </Box>
       );
     };
-    
+
     return (
       <Card variant="outlined" sx={{ mb: 2 }}>
         <CardContent>
@@ -248,21 +285,38 @@ export default function DataStructureVisualizer({ dataStructures = {} }) {
       <Typography variant="h5" gutterBottom>
         Data Structure Visualizations
       </Typography>
-      
+
       <Grid container spacing={2}>
         {Object.entries(structures).map(([name, data]) => (
           <Grid item xs={12} key={name}>
             <Typography variant="h6" color="primary" gutterBottom>
               {name.charAt(0).toUpperCase() + name.slice(1)}
             </Typography>
-            
-            {Array.isArray(data) && name.toLowerCase().includes('stack') && renderStack(data)}
-            {Array.isArray(data) && name.toLowerCase().includes('queue') && renderQueue(data)}
-            {Array.isArray(data) && !name.toLowerCase().includes('stack') && !name.toLowerCase().includes('queue') && renderArray(data)}
-            {typeof data === 'object' && !Array.isArray(data) && name.toLowerCase().includes('graph') && renderGraph(data)}
-            {typeof data === 'object' && !Array.isArray(data) && name.toLowerCase().includes('tree') && renderTree(data)}
-            {typeof data === 'object' && !Array.isArray(data) && !name.toLowerCase().includes('graph') && !name.toLowerCase().includes('tree') && renderDictionary(data)}
-            
+
+            {Array.isArray(data) &&
+              name.toLowerCase().includes('stack') &&
+              renderStack(data)}
+            {Array.isArray(data) &&
+              name.toLowerCase().includes('queue') &&
+              renderQueue(data)}
+            {Array.isArray(data) &&
+              !name.toLowerCase().includes('stack') &&
+              !name.toLowerCase().includes('queue') &&
+              renderArray(data)}
+            {typeof data === 'object' &&
+              !Array.isArray(data) &&
+              name.toLowerCase().includes('graph') &&
+              renderGraph(data)}
+            {typeof data === 'object' &&
+              !Array.isArray(data) &&
+              name.toLowerCase().includes('tree') &&
+              renderTree(data)}
+            {typeof data === 'object' &&
+              !Array.isArray(data) &&
+              !name.toLowerCase().includes('graph') &&
+              !name.toLowerCase().includes('tree') &&
+              renderDictionary(data)}
+
             {!Array.isArray(data) && typeof data !== 'object' && (
               <Card variant="outlined" sx={{ mb: 2 }}>
                 <CardContent>
@@ -278,4 +332,4 @@ export default function DataStructureVisualizer({ dataStructures = {} }) {
       </Grid>
     </Box>
   );
-} 
+}

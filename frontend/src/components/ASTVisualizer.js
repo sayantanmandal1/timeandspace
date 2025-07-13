@@ -11,12 +11,22 @@ function ASTNodeTree({ node, depth = 0 }) {
     <Box ml={depth * 2}>
       <Box display="flex" alignItems="center">
         {hasChildren && (
-          <IconButton size="small" onClick={() => setOpen(o => !o)}>
-            {open ? <ExpandMoreIcon fontSize="small" /> : <ChevronRightIcon fontSize="small" />}
+          <IconButton size="small" onClick={() => setOpen((o) => !o)}>
+            {open ? (
+              <ExpandMoreIcon fontSize="small" />
+            ) : (
+              <ChevronRightIcon fontSize="small" />
+            )}
           </IconButton>
         )}
-        <Typography variant="body2" component="span" sx={{ fontWeight: depth === 0 ? 'bold' : 'normal' }}>
-          {node.node_type || node.type} (line {node.line_number ?? node.start_point?.[0] ?? '-'}, col {node.column ?? node.start_point?.[1] ?? '-'})
+        <Typography
+          variant="body2"
+          component="span"
+          sx={{ fontWeight: depth === 0 ? 'bold' : 'normal' }}
+        >
+          {node.node_type || node.type} (line{' '}
+          {node.line_number ?? node.start_point?.[0] ?? '-'}, col{' '}
+          {node.column ?? node.start_point?.[1] ?? '-'})
         </Typography>
         {node.value && (
           <Typography variant="caption" color="text.secondary" ml={1}>
@@ -39,8 +49,10 @@ export default function ASTVisualizer({ ast }) {
   if (!ast) return <Typography>No AST available.</Typography>;
   return (
     <Box mt={2}>
-      <Typography variant="h6" gutterBottom>AST Visualization</Typography>
+      <Typography variant="h6" gutterBottom>
+        AST Visualization
+      </Typography>
       <ASTNodeTree node={ast} />
     </Box>
   );
-} 
+}

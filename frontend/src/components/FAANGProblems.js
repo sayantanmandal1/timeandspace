@@ -4,7 +4,8 @@ import { Box, Paper, Typography, Button, Chip, Tabs, Tab } from '@mui/material';
 const pythonProblems = [
   {
     title: 'Palindrome Checker (Stack)',
-    description: 'Check if a string is a palindrome using a stack. Classic interview question for string/data structure understanding.',
+    description:
+      'Check if a string is a palindrome using a stack. Classic interview question for string/data structure understanding.',
     difficulty: 'Easy',
     language: 'python',
     code: `def is_palindrome(s):
@@ -30,11 +31,12 @@ const pythonProblems = [
 # Test the function
 test_string = "A man, a plan, a canal: Panama"
 result = is_palindrome(test_string)
-print(f"'{test_string}' is palindrome: {result}")`
+print(f"'{test_string}' is palindrome: {result}")`,
   },
   {
     title: 'Two Sum',
-    description: 'Find indices of two numbers that add up to a target. Common in FAANG phone screens.',
+    description:
+      'Find indices of two numbers that add up to a target. Common in FAANG phone screens.',
     difficulty: 'Easy',
     language: 'python',
     code: `def two_sum(nums, target):
@@ -49,11 +51,12 @@ print(f"'{test_string}' is palindrome: {result}")`
 nums = [2, 7, 11, 15]
 target = 9
 result = two_sum(nums, target)
-print(f"Indices for target {target}: {result}")`
+print(f"Indices for target {target}: {result}")`,
   },
   {
     title: 'Binary Search',
-    description: 'Efficiently search a sorted array. Classic algorithm question.',
+    description:
+      'Efficiently search a sorted array. Classic algorithm question.',
     difficulty: 'Medium',
     language: 'python',
     code: `def binary_search(arr, target):
@@ -74,11 +77,12 @@ print(f"Indices for target {target}: {result}")`
 arr = [1, 2, 3, 4, 5, 6, 7, 8, 9, 10]
 target = 7
 result = binary_search(arr, target)
-print(f"Target {target} found at index: {result}")`
+print(f"Target {target} found at index: {result}")`,
   },
   {
     title: 'BFS on Graph',
-    description: 'Breadth-first search traversal of a graph. Key for graph questions.',
+    description:
+      'Breadth-first search traversal of a graph. Key for graph questions.',
     difficulty: 'Medium',
     language: 'python',
     code: `from collections import deque
@@ -101,11 +105,12 @@ def bfs(graph, start):
 graph = {0: [1, 2], 1: [2], 2: [0, 3], 3: [3]}
 start_node = 2
 result = bfs(graph, start_node)
-print(f"BFS traversal from node {start_node}: {result}")`
+print(f"BFS traversal from node {start_node}: {result}")`,
   },
   {
     title: 'Bubble Sort',
-    description: 'Simple sorting algorithm. Good for understanding sorting concepts.',
+    description:
+      'Simple sorting algorithm. Good for understanding sorting concepts.',
     difficulty: 'Easy',
     language: 'python',
     code: `def bubble_sort(arr):
@@ -127,11 +132,12 @@ print(f"BFS traversal from node {start_node}: {result}")`
 arr = [64, 34, 25, 12, 22, 11, 90]
 sorted_arr = bubble_sort(arr.copy())
 print(f"Original: {arr}")
-print(f"Sorted: {sorted_arr}")`
+print(f"Sorted: {sorted_arr}")`,
   },
   {
     title: 'Fibonacci with Memoization',
-    description: 'Dynamic programming example with memoization. Common optimization question.',
+    description:
+      'Dynamic programming example with memoization. Common optimization question.',
     difficulty: 'Medium',
     language: 'python',
     code: `def fibonacci(n, memo={}):
@@ -147,8 +153,8 @@ print(f"Sorted: {sorted_arr}")`
 # Test
 n = 10
 result = fibonacci(n)
-print(f"Fibonacci({n}) = {result}")`
-  }
+print(f"Fibonacci({n}) = {result}")`,
+  },
 ];
 
 const javaProblems = [
@@ -189,7 +195,7 @@ public class PalindromeChecker {
         boolean result = isPalindrome(testString);
         System.out.println("'" + testString + "' is palindrome: " + result);
     }
-}`
+}`,
   },
   {
     title: 'Two Sum',
@@ -219,7 +225,7 @@ public class TwoSum {
         int[] result = twoSum(nums, target);
         System.out.println("Indices for target " + target + ": [" + result[0] + ", " + result[1] + "]");
     }
-}`
+}`,
   },
   {
     title: 'Binary Search',
@@ -252,7 +258,7 @@ public class TwoSum {
         int result = binarySearch(arr, target);
         System.out.println("Target " + target + " found at index: " + result);
     }
-}`
+}`,
   },
   {
     title: 'Queue Implementation',
@@ -281,7 +287,7 @@ public class QueueExample {
         
         System.out.println("Queue is empty: " + queue.isEmpty());
     }
-}`
+}`,
   },
   {
     title: 'Bubble Sort',
@@ -320,7 +326,7 @@ public class BubbleSort {
         bubbleSort(arr);
         System.out.println("Sorted array: " + Arrays.toString(arr));
     }
-}`
+}`,
   },
   {
     title: 'Tree Traversal',
@@ -384,48 +390,65 @@ public class TreeTraversal {
         postOrder(root);
         System.out.println();
     }
-}`
-  }
+}`,
+  },
 ];
 
-export default function FAANGProblems({ onSelectExample, selectedLanguage = 'python' }) {
+export default function FAANGProblems({
+  onSelectExample,
+  selectedLanguage = 'python',
+}) {
   const [activeTab, setActiveTab] = React.useState(0);
-  
+
   const problems = activeTab === 0 ? pythonProblems : javaProblems;
   const currentLanguage = activeTab === 0 ? 'python' : 'java';
 
   return (
     <Box>
-      <Typography variant="h6" gutterBottom>FAANG Interview Problems</Typography>
-      
-      <Tabs value={activeTab} onChange={(e, v) => setActiveTab(v)} sx={{ mb: 2 }}>
+      <Typography variant="h6" gutterBottom>
+        FAANG Interview Problems
+      </Typography>
+
+      <Tabs
+        value={activeTab}
+        onChange={(e, v) => setActiveTab(v)}
+        sx={{ mb: 2 }}
+      >
         <Tab label="Python" />
         <Tab label="Java" />
       </Tabs>
-      
+
       {problems.map((p, idx) => (
         <Paper key={idx} sx={{ p: 2, mb: 2 }} variant="outlined">
-          <Box display="flex" alignItems="center" justifyContent="space-between">
+          <Box
+            display="flex"
+            alignItems="center"
+            justifyContent="space-between"
+          >
             <Box>
-              <Typography variant="subtitle1"><b>{p.title}</b></Typography>
-              <Typography variant="body2" color="text.secondary">{p.description}</Typography>
+              <Typography variant="subtitle1">
+                <b>{p.title}</b>
+              </Typography>
+              <Typography variant="body2" color="text.secondary">
+                {p.description}
+              </Typography>
               <Box display="flex" gap={1} mt={1}>
-                <Chip 
-                  label={p.difficulty} 
-                  color={p.difficulty === 'Easy' ? 'success' : 'warning'} 
-                  size="small" 
+                <Chip
+                  label={p.difficulty}
+                  color={p.difficulty === 'Easy' ? 'success' : 'warning'}
+                  size="small"
                 />
-                <Chip 
-                  label={currentLanguage} 
-                  color="primary" 
-                  size="small" 
+                <Chip
+                  label={currentLanguage}
+                  color="primary"
+                  size="small"
                   variant="outlined"
                 />
               </Box>
             </Box>
-            <Button 
-              variant="contained" 
-              onClick={() => onSelectExample(p.code, currentLanguage)} 
+            <Button
+              variant="contained"
+              onClick={() => onSelectExample(p.code, currentLanguage)}
               sx={{ ml: 2 }}
             >
               Load Example
@@ -435,4 +458,4 @@ export default function FAANGProblems({ onSelectExample, selectedLanguage = 'pyt
       ))}
     </Box>
   );
-} 
+}

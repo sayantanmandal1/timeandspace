@@ -13,7 +13,7 @@ import {
   Grid,
   Container,
   FormControl,
-  InputLabel
+  InputLabel,
 } from '@mui/material';
 import {
   PlayArrow,
@@ -27,7 +27,7 @@ import {
   Timer as TimerIcon,
   Memory as MemoryIcon,
   Settings as SettingsIcon,
-  Error as ErrorIcon
+  Error as ErrorIcon,
 } from '@mui/icons-material';
 import CodeEditor from '../components/CodeEditor';
 import { executeCode } from '../api';
@@ -61,11 +61,19 @@ export default function ExecutePage() {
   const [memoryUsage, setMemoryUsage] = useState(null);
   const [exitCode, setExitCode] = useState(null);
   const [languages] = useState(['python', 'java', 'javascript', 'cpp', 'c']);
-  const [snackbar, setSnackbar] = useState({ open: false, message: '', severity: 'info' });
+  const [snackbar, setSnackbar] = useState({
+    open: false,
+    message: '',
+    severity: 'info',
+  });
 
   const handleExecute = async () => {
     if (!code.trim()) {
-      setSnackbar({ open: true, message: 'Please enter some code to execute.', severity: 'warning' });
+      setSnackbar({
+        open: true,
+        message: 'Please enter some code to execute.',
+        severity: 'warning',
+      });
       return;
     }
 
@@ -82,27 +90,43 @@ export default function ExecutePage() {
         code,
         language,
         input_data: [],
-        timeout: 30
+        timeout: 30,
       });
 
       const endTime = Date.now();
       const actualExecutionTime = (endTime - startTime) / 1000;
 
       if (response.data.success) {
-        setOutput(response.data.output || 'Code executed successfully with no output.');
-        setExecutionTime(actualExecutionTime);
-        setMemoryUsage(response.data.memory_usage || 0);
-        setExitCode(response.data.exit_code || 0);
-        setSnackbar({ open: true, message: 'Code executed successfully!', severity: 'success' });
+        setOutput(response.data.output || '');
+        setExecutionTime(response.data.execution_time || null);
+        setMemoryUsage(response.data.memory_usage || null);
+        setExitCode(response.data.exit_code || null);
+        setSnackbar({
+          open: true,
+          message: 'Code executed successfully!',
+          severity: 'success',
+        });
       } else {
-        setError(response.data.error || 'Execution failed');
-        setExitCode(response.data.exit_code || 1);
-        setSnackbar({ open: true, message: 'Code execution failed. Check the error output.', severity: 'error' });
+        const responseError = response.data.error;
+        const errorMessage =
+          typeof responseError === 'string'
+            ? responseError
+            : JSON.stringify(responseError);
+        setError(errorMessage || 'Execution failed');
+        setSnackbar({
+          open: true,
+          message: 'Code execution failed. Check the error output.',
+          severity: 'error',
+        });
       }
     } catch (err) {
       console.error('Execution error:', err);
       setError(err.response?.data?.error || err.message || 'Execution failed');
-      setSnackbar({ open: true, message: 'Execution failed. Please check your code and try again.', severity: 'error' });
+      setSnackbar({
+        open: true,
+        message: 'Execution failed. Please check your code and try again.',
+        severity: 'error',
+      });
     } finally {
       setLoading(false);
     }
@@ -115,7 +139,11 @@ export default function ExecutePage() {
     setExecutionTime(null);
     setMemoryUsage(null);
     setExitCode(null);
-    setSnackbar({ open: true, message: 'Code editor cleared.', severity: 'info' });
+    setSnackbar({
+      open: true,
+      message: 'Code editor cleared.',
+      severity: 'info',
+    });
   };
 
   const handleReset = () => {
@@ -125,7 +153,11 @@ export default function ExecutePage() {
     setExecutionTime(null);
     setMemoryUsage(null);
     setExitCode(null);
-    setSnackbar({ open: true, message: 'Reset to default code.', severity: 'info' });
+    setSnackbar({
+      open: true,
+      message: 'Reset to default code.',
+      severity: 'info',
+    });
   };
 
   const handleDownload = () => {
@@ -136,7 +168,11 @@ export default function ExecutePage() {
     a.download = `code.${language}`;
     a.click();
     URL.revokeObjectURL(url);
-    setSnackbar({ open: true, message: 'Code downloaded successfully!', severity: 'success' });
+    setSnackbar({
+      open: true,
+      message: 'Code downloaded successfully!',
+      severity: 'success',
+    });
   };
 
   const handleFileUpload = (event) => {
@@ -145,7 +181,11 @@ export default function ExecutePage() {
       const reader = new FileReader();
       reader.onload = (e) => {
         setCode(e.target.result);
-        setSnackbar({ open: true, message: 'File uploaded successfully!', severity: 'success' });
+        setSnackbar({
+          open: true,
+          message: 'File uploaded successfully!',
+          severity: 'success',
+        });
       };
       reader.readAsText(file);
     }
@@ -153,37 +193,59 @@ export default function ExecutePage() {
 
   const handleLoadExample = () => {
     setCode(defaultCode);
-    setSnackbar({ open: true, message: 'Example code loaded.', severity: 'info' });
+    setSnackbar({
+      open: true,
+      message: 'Example code loaded.',
+      severity: 'info',
+    });
   };
 
   return (
     <Container maxWidth="xl" sx={{ py: 4 }}>
-      <Typography variant="h3" component="h1" gutterBottom align="center" sx={{ mb: 4 }}>
+      <Typography
+        variant="h3"
+        component="h1"
+        gutterBottom
+        align="center"
+        sx={{ mb: 4 }}
+      >
         Code Execution Platform
       </Typography>
-      
+
       {/* Language info */}
       <Box display="flex" alignItems="center" gap={1} mb={2}>
         <Language color="primary" />
-        <Typography variant="body2">Language selection available above the editor.</Typography>
+        <Typography variant="body2">
+          Language selection available above the editor.
+        </Typography>
       </Box>
-      
+
       {/* Action buttons */}
       <Box sx={{ display: 'flex', gap: 2, flexWrap: 'wrap', mb: 3 }}>
-        <Button startIcon={<Download />} variant="outlined">Download</Button>
-        <Button startIcon={<Upload />} variant="outlined">Upload</Button>
-        <Button onClick={handleReset} variant="outlined">Reset</Button>
-        <Button onClick={handleDownload} variant="outlined">Download Code</Button>
-        <Button onClick={handleFileUpload} variant="outlined">Upload File</Button>
+        <Button startIcon={<Download />} variant="outlined">
+          Download
+        </Button>
+        <Button startIcon={<Upload />} variant="outlined">
+          Upload
+        </Button>
+        <Button onClick={handleReset} variant="outlined">
+          Reset
+        </Button>
+        <Button onClick={handleDownload} variant="outlined">
+          Download Code
+        </Button>
+        <Button onClick={handleFileUpload} variant="outlined">
+          Upload File
+        </Button>
       </Box>
-      
+
       {/* Languages info */}
       {languages && (
         <Alert severity="info" sx={{ mb: 2 }}>
           Supported languages: {languages.join(', ')}
         </Alert>
       )}
-      
+
       <Grid container spacing={3}>
         {/* Code Editor Section - Wider */}
         <Grid item xs={12} lg={8}>
@@ -192,7 +254,7 @@ export default function ExecutePage() {
               <CodeIcon sx={{ mr: 1, verticalAlign: 'middle' }} />
               Code Editor
             </Typography>
-            
+
             <Box sx={{ mb: 3 }}>
               <FormControl fullWidth sx={{ mb: 2 }}>
                 <InputLabel>Programming Language</InputLabel>
@@ -215,7 +277,7 @@ export default function ExecutePage() {
                   <MenuItem value="kotlin">Kotlin</MenuItem>
                 </Select>
               </FormControl>
-              
+
               <CodeEditor
                 value={code}
                 onChange={setCode}
@@ -225,18 +287,20 @@ export default function ExecutePage() {
                 placeholder={`Enter your ${language} code here...`}
               />
             </Box>
-            
+
             <Box sx={{ display: 'flex', gap: 2, flexWrap: 'wrap' }}>
               <Button
                 variant="contained"
                 onClick={handleExecute}
                 disabled={loading || !code.trim()}
-                startIcon={loading ? <CircularProgress size={20} /> : <PlayArrow />}
+                startIcon={
+                  loading ? <CircularProgress size={20} /> : <PlayArrow />
+                }
                 sx={{ minWidth: 120 }}
               >
                 {loading ? 'Executing...' : 'Execute Code'}
               </Button>
-              
+
               <Button
                 variant="outlined"
                 onClick={handleClear}
@@ -245,7 +309,7 @@ export default function ExecutePage() {
               >
                 Clear
               </Button>
-              
+
               <Button
                 variant="outlined"
                 onClick={handleLoadExample}
@@ -265,7 +329,7 @@ export default function ExecutePage() {
               <AssessmentIcon sx={{ mr: 1, verticalAlign: 'middle' }} />
               Execution Output
             </Typography>
-            
+
             {/* Execution stats icons */}
             <Box display="flex" alignItems="center" gap={1} mb={2}>
               <SpeedIcon color="primary" />
@@ -275,22 +339,26 @@ export default function ExecutePage() {
               <ErrorIcon color="error" />
               <Typography variant="body2">Execution stats icons.</Typography>
             </Box>
-            
+
             {error && (
               <Alert severity="error" sx={{ mb: 2 }}>
                 {error}
               </Alert>
             )}
-            
+
             {loading && (
               <Box sx={{ textAlign: 'center', py: 4 }}>
                 <CircularProgress />
-                <Typography variant="body2" color="textSecondary" sx={{ mt: 1 }}>
+                <Typography
+                  variant="body2"
+                  color="textSecondary"
+                  sx={{ mt: 1 }}
+                >
                   Executing your code...
                 </Typography>
               </Box>
             )}
-            
+
             {output && !loading && (
               <Box>
                 {/* Output */}
@@ -305,7 +373,7 @@ export default function ExecutePage() {
                     minHeight: '100px',
                     maxHeight: '200px',
                     overflow: 'auto',
-                    whiteSpace: 'pre-wrap'
+                    whiteSpace: 'pre-wrap',
                   }}
                 >
                   {output}
@@ -333,7 +401,7 @@ export default function ExecutePage() {
                     <Chip
                       icon={<ErrorIcon />}
                       label={`Exit: ${exitCode}`}
-                      color={exitCode === 0 ? "success" : "error"}
+                      color={exitCode === 0 ? 'success' : 'error'}
                       variant="outlined"
                     />
                   )}
@@ -343,7 +411,7 @@ export default function ExecutePage() {
           </Paper>
         </Grid>
       </Grid>
-      
+
       {/* Snackbar for notifications */}
       <Snackbar
         open={snackbar?.open || false}
@@ -360,4 +428,4 @@ export default function ExecutePage() {
       </Snackbar>
     </Container>
   );
-} 
+}

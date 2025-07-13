@@ -26,7 +26,7 @@ import {
   AccordionDetails,
   LinearProgress,
   Snackbar,
-  InputLabel
+  InputLabel,
 } from '@mui/material';
 import {
   PlayArrow as PlayArrowIcon,
@@ -46,7 +46,7 @@ import {
   AutoFixHigh as AutoFixHighIcon,
   TrendingUp as TrendingUpIcon,
   Clear as ClearIcon,
-  ContentCopy as ContentCopyIcon
+  ContentCopy as ContentCopyIcon,
 } from '@mui/icons-material';
 import CodeEditor from '../components/CodeEditor';
 import { suggestOptimizations, applyOptimizations } from '../api';
@@ -82,11 +82,19 @@ export default function OptimizationPage() {
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState(null);
   const [languages] = useState(['python', 'java', 'javascript', 'cpp', 'c']);
-  const [snackbar, setSnackbar] = useState({ open: false, message: '', severity: 'info' });
+  const [snackbar, setSnackbar] = useState({
+    open: false,
+    message: '',
+    severity: 'info',
+  });
 
   const handleSuggestOptimizations = async () => {
     if (!code.trim()) {
-      setSnackbar({ open: true, message: 'Please enter some code to optimize.', severity: 'warning' });
+      setSnackbar({
+        open: true,
+        message: 'Please enter some code to optimize.',
+        severity: 'warning',
+      });
       return;
     }
 
@@ -99,20 +107,46 @@ export default function OptimizationPage() {
       const response = await suggestOptimizations({
         code,
         language,
-        optimization_type: optimizationType
+        optimization_type: optimizationType,
       });
 
       if (response.data.success) {
         setSuggestions(response.data);
-        setSnackbar({ open: true, message: 'Optimization suggestions generated!', severity: 'success' });
+        setSnackbar({
+          open: true,
+          message: 'Optimization suggestions generated!',
+          severity: 'success',
+        });
       } else {
-        setError(response.data.error || 'Failed to generate suggestions');
-        setSnackbar({ open: true, message: 'Failed to generate suggestions. Please check your code.', severity: 'error' });
+        const responseError = response.data.error;
+        const errorMessage =
+          typeof responseError === 'string'
+            ? responseError
+            : JSON.stringify(responseError);
+        setError(errorMessage || 'Failed to generate suggestions');
+        setSnackbar({
+          open: true,
+          message: 'Failed to generate suggestions. Please check your code.',
+          severity: 'error',
+        });
       }
     } catch (err) {
       console.error('Optimization error:', err);
-      setError(err.response?.data?.error || err.message);
-      setSnackbar({ open: true, message: 'Failed to generate suggestions. Please try again.', severity: 'error' });
+      const errorMessage =
+        err.response?.data?.error ||
+        err.message ||
+        'Failed to generate suggestions';
+      // Ensure error is a string
+      setError(
+        typeof errorMessage === 'string'
+          ? errorMessage
+          : JSON.stringify(errorMessage)
+      );
+      setSnackbar({
+        open: true,
+        message: 'Failed to generate suggestions. Please try again.',
+        severity: 'error',
+      });
     } finally {
       setLoading(false);
     }
@@ -120,7 +154,11 @@ export default function OptimizationPage() {
 
   const handleApplyOptimizations = async () => {
     if (!code.trim()) {
-      setSnackbar({ open: true, message: 'Please enter some code to optimize.', severity: 'warning' });
+      setSnackbar({
+        open: true,
+        message: 'Please enter some code to optimize.',
+        severity: 'warning',
+      });
       return;
     }
 
@@ -132,20 +170,46 @@ export default function OptimizationPage() {
       const response = await applyOptimizations({
         code,
         language,
-        optimization_type: optimizationType
+        optimization_type: optimizationType,
       });
 
       if (response.data.success) {
         setOptimizedCode(response.data);
-        setSnackbar({ open: true, message: 'Optimized code generated!', severity: 'success' });
+        setSnackbar({
+          open: true,
+          message: 'Optimized code generated!',
+          severity: 'success',
+        });
       } else {
-        setError(response.data.error || 'Failed to apply optimizations');
-        setSnackbar({ open: true, message: 'Failed to apply optimizations. Please check your code.', severity: 'error' });
+        const responseError = response.data.error;
+        const errorMessage =
+          typeof responseError === 'string'
+            ? responseError
+            : JSON.stringify(responseError);
+        setError(errorMessage || 'Failed to apply optimizations');
+        setSnackbar({
+          open: true,
+          message: 'Failed to apply optimizations. Please check your code.',
+          severity: 'error',
+        });
       }
     } catch (err) {
       console.error('Optimization error:', err);
-      setError(err.response?.data?.error || err.message);
-      setSnackbar({ open: true, message: 'Failed to apply optimizations. Please try again.', severity: 'error' });
+      const errorMessage =
+        err.response?.data?.error ||
+        err.message ||
+        'Failed to apply optimizations';
+      // Ensure error is a string
+      setError(
+        typeof errorMessage === 'string'
+          ? errorMessage
+          : JSON.stringify(errorMessage)
+      );
+      setSnackbar({
+        open: true,
+        message: 'Failed to apply optimizations. Please try again.',
+        severity: 'error',
+      });
     } finally {
       setLoading(false);
     }
@@ -161,19 +225,25 @@ export default function OptimizationPage() {
 
   return (
     <Container maxWidth="xl" sx={{ py: 4 }}>
-      <Typography variant="h3" component="h1" gutterBottom align="center" sx={{ mb: 4 }}>
+      <Typography
+        variant="h3"
+        component="h1"
+        gutterBottom
+        align="center"
+        sx={{ mb: 4 }}
+      >
         Code Optimization Platform
       </Typography>
-      
+
       {/* Optimization notes field */}
-      <TextField 
-        label="Optimization Notes" 
-        variant="outlined" 
-        fullWidth 
-        sx={{ mb: 2 }} 
+      <TextField
+        label="Optimization Notes"
+        variant="outlined"
+        fullWidth
+        sx={{ mb: 2 }}
         placeholder="Add notes about your optimization goals..."
       />
-      
+
       {/* Info tooltip */}
       <Box sx={{ mb: 2 }}>
         <Tooltip title="Optimization Info">
@@ -182,7 +252,7 @@ export default function OptimizationPage() {
           </IconButton>
         </Tooltip>
       </Box>
-      
+
       {/* Optimization stats card */}
       <Card sx={{ mb: 2 }}>
         <CardContent>
@@ -194,27 +264,33 @@ export default function OptimizationPage() {
             <ErrorIcon color="error" />
             <WarningIcon color="warning" />
             <InfoIcon color="info" />
-            <Typography variant="body2">Optimization stats and icons.</Typography>
+            <Typography variant="body2">
+              Optimization stats and icons.
+            </Typography>
           </Box>
         </CardContent>
       </Card>
-      
+
       {/* Progress bar */}
       <LinearProgress sx={{ mb: 2 }} />
-      
+
       {/* Action buttons */}
       <Box sx={{ display: 'flex', gap: 2, flexWrap: 'wrap', mb: 3 }}>
-        <Button startIcon={<DownloadIcon />} variant="outlined">Download</Button>
-        <Button startIcon={<UploadIcon />} variant="outlined">Upload</Button>
+        <Button startIcon={<DownloadIcon />} variant="outlined">
+          Download
+        </Button>
+        <Button startIcon={<UploadIcon />} variant="outlined">
+          Upload
+        </Button>
       </Box>
-      
+
       {/* Languages info */}
       {languages && (
         <Alert severity="info" sx={{ mb: 2 }}>
           Supported languages: {languages.join(', ')}
         </Alert>
       )}
-      
+
       <Grid container spacing={3}>
         {/* Code Editor Section - Wider */}
         <Grid item xs={12} lg={8}>
@@ -223,7 +299,7 @@ export default function OptimizationPage() {
               <CodeIcon sx={{ mr: 1, verticalAlign: 'middle' }} />
               Code Editor
             </Typography>
-            
+
             <Box sx={{ mb: 3 }}>
               <FormControl fullWidth sx={{ mb: 2 }}>
                 <InputLabel>Programming Language</InputLabel>
@@ -246,7 +322,7 @@ export default function OptimizationPage() {
                   <MenuItem value="kotlin">Kotlin</MenuItem>
                 </Select>
               </FormControl>
-              
+
               <FormControl fullWidth sx={{ mb: 2 }}>
                 <InputLabel>Optimization Type</InputLabel>
                 <Select
@@ -261,7 +337,7 @@ export default function OptimizationPage() {
                   <MenuItem value="security">Security</MenuItem>
                 </Select>
               </FormControl>
-              
+
               <CodeEditor
                 value={code}
                 onChange={setCode}
@@ -271,32 +347,36 @@ export default function OptimizationPage() {
                 placeholder={`Enter your ${language} code to optimize...`}
               />
             </Box>
-            
+
             <Box sx={{ display: 'flex', gap: 2, flexWrap: 'wrap' }}>
               <Button
                 variant="contained"
                 onClick={handleSuggestOptimizations}
                 disabled={loading || !code.trim()}
-                startIcon={loading ? <CircularProgress size={20} /> : <LightbulbIcon />}
+                startIcon={
+                  loading ? <CircularProgress size={20} /> : <LightbulbIcon />
+                }
                 sx={{ minWidth: 120 }}
               >
                 {loading ? 'Analyzing...' : 'Get Suggestions'}
               </Button>
-              
+
               <Button
                 variant="contained"
                 onClick={handleApplyOptimizations}
                 disabled={loading || !code.trim()}
-                startIcon={loading ? <CircularProgress size={20} /> : <PlayArrowIcon />}
+                startIcon={
+                  loading ? <CircularProgress size={20} /> : <PlayArrowIcon />
+                }
                 sx={{
                   backgroundColor: '#333',
                   '&:hover': { backgroundColor: '#555' },
-                  minWidth: 120
+                  minWidth: 120,
                 }}
               >
                 {loading ? 'Optimizing...' : 'Optimize Code'}
               </Button>
-              
+
               <Button
                 variant="outlined"
                 onClick={handleClear}
@@ -316,30 +396,42 @@ export default function OptimizationPage() {
               <AutoFixHighIcon sx={{ mr: 1, verticalAlign: 'middle' }} />
               Optimization Results
             </Typography>
-            
+
             {error && (
               <Alert severity="error" sx={{ mb: 2 }}>
                 {error}
               </Alert>
             )}
-            
+
             {loading && (
               <Box sx={{ textAlign: 'center', py: 4 }}>
                 <CircularProgress />
-                <Typography variant="body2" color="textSecondary" sx={{ mt: 1 }}>
+                <Typography
+                  variant="body2"
+                  color="textSecondary"
+                  sx={{ mt: 1 }}
+                >
                   Analyzing your code...
                 </Typography>
               </Box>
             )}
-            
+
             {suggestions && !loading && (
               <Accordion defaultExpanded sx={{ mb: 2 }}>
                 <AccordionSummary expandIcon={<ExpandMoreIcon />}>
                   <Box display="flex" alignItems="center" gap={1}>
                     <LightbulbIcon color="primary" />
-                    <Typography variant="h6">Optimization Suggestions</Typography>
+                    <Typography variant="h6">
+                      Optimization Suggestions
+                    </Typography>
                     <Chip
-                      label={Array.isArray(suggestions) ? suggestions.length : (suggestions.suggestions ? suggestions.suggestions.length : 0)}
+                      label={
+                        Array.isArray(suggestions)
+                          ? suggestions.length
+                          : suggestions.suggestions
+                            ? suggestions.suggestions.length
+                            : 0
+                      }
                       size="small"
                       color="primary"
                     />
@@ -377,43 +469,45 @@ export default function OptimizationPage() {
                 </AccordionDetails>
               </Accordion>
             )}
-            
-            {suggestions?.improvements && Object.keys(suggestions.improvements).length > 0 && (
-              <Accordion sx={{ mb: 2 }}>
-                <AccordionSummary expandIcon={<ExpandMoreIcon />}>
-                  <Box display="flex" alignItems="center" gap={1}>
-                    <TrendingUpIcon color="success" />
-                    <Typography variant="h6">Expected Improvements</Typography>
-                  </Box>
-                </AccordionSummary>
-                <AccordionDetails>
-                  <List dense>
-                    {Object.entries(suggestions.improvements).map(([key, value]) => (
-                      <ListItem key={key}>
-                        <ListItemIcon>
-                          <TrendingUpIcon color="success" fontSize="small" />
-                        </ListItemIcon>
-                        <ListItemText 
-                          primary={`${key}: ${value}`}
-                        />
-                      </ListItem>
-                    ))}
-                  </List>
-                </AccordionDetails>
-              </Accordion>
-            )}
-            
+
+            {suggestions?.improvements &&
+              Object.keys(suggestions.improvements).length > 0 && (
+                <Accordion sx={{ mb: 2 }}>
+                  <AccordionSummary expandIcon={<ExpandMoreIcon />}>
+                    <Box display="flex" alignItems="center" gap={1}>
+                      <TrendingUpIcon color="success" />
+                      <Typography variant="h6">
+                        Expected Improvements
+                      </Typography>
+                    </Box>
+                  </AccordionSummary>
+                  <AccordionDetails>
+                    <List dense>
+                      {Object.entries(suggestions.improvements).map(
+                        ([key, value]) => (
+                          <ListItem key={key}>
+                            <ListItemIcon>
+                              <TrendingUpIcon
+                                color="success"
+                                fontSize="small"
+                              />
+                            </ListItemIcon>
+                            <ListItemText primary={`${key}: ${value}`} />
+                          </ListItem>
+                        )
+                      )}
+                    </List>
+                  </AccordionDetails>
+                </Accordion>
+              )}
+
             {optimizedCode && (
               <Accordion defaultExpanded>
                 <AccordionSummary expandIcon={<ExpandMoreIcon />}>
                   <Box display="flex" alignItems="center" gap={1}>
                     <CodeIcon color="success" />
                     <Typography variant="h6">Optimized Code</Typography>
-                    <Chip
-                      label="Ready to Copy"
-                      size="small"
-                      color="success"
-                    />
+                    <Chip label="Ready to Copy" size="small" color="success" />
                   </Box>
                 </AccordionSummary>
                 <AccordionDetails>
@@ -429,16 +523,26 @@ export default function OptimizationPage() {
                       maxHeight: '400px',
                       overflow: 'auto',
                       whiteSpace: 'pre-wrap',
-                      border: '1px solid #404040'
+                      border: '1px solid #404040',
                     }}
                   >
-                    {typeof optimizedCode === 'string' ? optimizedCode : (optimizedCode.optimized_code || JSON.stringify(optimizedCode, null, 2))}
+                    {typeof optimizedCode === 'string'
+                      ? optimizedCode
+                      : optimizedCode.optimized_code ||
+                        JSON.stringify(optimizedCode, null, 2)}
                   </Box>
                   <Box sx={{ mt: 2, display: 'flex', gap: 1 }}>
                     <Button
                       variant="outlined"
                       size="small"
-                      onClick={() => navigator.clipboard.writeText(typeof optimizedCode === 'string' ? optimizedCode : (optimizedCode.optimized_code || JSON.stringify(optimizedCode, null, 2)))}
+                      onClick={() =>
+                        navigator.clipboard.writeText(
+                          typeof optimizedCode === 'string'
+                            ? optimizedCode
+                            : optimizedCode.optimized_code ||
+                                JSON.stringify(optimizedCode, null, 2)
+                        )
+                      }
                       startIcon={<ContentCopyIcon />}
                     >
                       Copy Code
@@ -446,7 +550,13 @@ export default function OptimizationPage() {
                     <Button
                       variant="outlined"
                       size="small"
-                      onClick={() => setCode(typeof optimizedCode === 'string' ? optimizedCode : (optimizedCode.optimized_code || ''))}
+                      onClick={() =>
+                        setCode(
+                          typeof optimizedCode === 'string'
+                            ? optimizedCode
+                            : optimizedCode.optimized_code || ''
+                        )
+                      }
                       startIcon={<CodeIcon />}
                     >
                       Replace Original
@@ -455,7 +565,7 @@ export default function OptimizationPage() {
                 </AccordionDetails>
               </Accordion>
             )}
-            
+
             {!suggestions && !optimizedCode && !error && (
               <Box textAlign="center" py={4}>
                 <LightbulbIcon sx={{ fontSize: 64, color: '#ccc', mb: 2 }} />
@@ -470,7 +580,7 @@ export default function OptimizationPage() {
           </Paper>
         </Grid>
       </Grid>
-      
+
       {/* Snackbar for notifications */}
       <Snackbar
         open={snackbar?.open || false}
@@ -487,4 +597,4 @@ export default function OptimizationPage() {
       </Snackbar>
     </Container>
   );
-} 
+}

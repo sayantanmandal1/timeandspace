@@ -1,12 +1,13 @@
 {
-  "name": "frontend",
-  "version": "0.1.0",
+  "name": "dsa-code-visualizer-frontend",
+  "version": "1.0.0",
   "private": true,
   "dependencies": {
     "@emotion/react": "^11.11.1",
     "@emotion/styled": "^11.11.0",
     "@mui/icons-material": "^5.14.19",
     "@mui/material": "^5.14.20",
+    "@mui/lab": "^5.0.0-alpha.155",
     "@testing-library/dom": "^9.3.3",
     "@testing-library/jest-dom": "^6.1.5",
     "@testing-library/react": "^14.1.2",
@@ -19,19 +20,70 @@
     "react-router-dom": "^6.20.1",
     "react-scripts": "5.0.1",
     "recharts": "^2.8.0",
-    "web-vitals": "^3.5.0"
+    "web-vitals": "^3.5.0",
+    "react-helmet-async": "^2.0.4",
+    "react-query": "^3.39.3",
+    "react-hook-form": "^7.48.2",
+    "react-hot-toast": "^2.4.1",
+    "framer-motion": "^10.16.16",
+    "react-intersection-observer": "^9.5.3",
+    "react-virtualized": "^9.22.5",
+    "react-window": "^1.8.8",
+    "react-error-boundary": "^4.0.11",
+    "react-lazy-load-image-component": "^1.6.0",
+    "react-copy-to-clipboard": "^5.1.0",
+    "react-share": "^4.4.1",
+    "react-ga4": "^2.1.0",
+    "react-hotkeys-hook": "^4.4.1",
+    "react-use": "^17.4.2",
+    "lodash": "^4.17.21",
+    "date-fns": "^2.30.0",
+    "clsx": "^2.0.0",
+    "class-variance-authority": "^0.7.0",
+    "tailwind-merge": "^2.2.0"
+  },
+  "devDependencies": {
+    "@types/react": "^18.2.45",
+    "@types/react-dom": "^18.2.18",
+    "@types/lodash": "^4.14.202",
+    "eslint": "^8.56.0",
+    "eslint-config-prettier": "^9.1.0",
+    "eslint-plugin-prettier": "^5.1.2",
+    "prettier": "^3.1.1",
+    "husky": "^8.0.3",
+    "lint-staged": "^15.2.0",
+    "typescript": "^4.9.5"
   },
   "scripts": {
     "start": "react-scripts start",
     "build": "react-scripts build",
     "test": "react-scripts test",
-    "eject": "react-scripts eject"
+    "eject": "react-scripts eject",
+    "lint": "eslint src --ext .js,.jsx,.ts,.tsx",
+    "lint:fix": "eslint src --ext .js,.jsx,.ts,.tsx --fix",
+    "format": "prettier --write src/**/*.{js,jsx,ts,tsx,json,css,md}",
+    "type-check": "tsc --noEmit",
+    "prepare": "husky install"
   },
   "eslintConfig": {
     "extends": [
       "react-app",
-      "react-app/jest"
-    ]
+      "react-app/jest",
+      "prettier"
+    ],
+    "plugins": ["prettier"],
+    "rules": {
+      "prettier/prettier": "error",
+      "no-unused-vars": "warn",
+      "no-console": "warn"
+    }
+  },
+  "prettier": {
+    "semi": true,
+    "trailingComma": "es5",
+    "singleQuote": true,
+    "printWidth": 80,
+    "tabWidth": 2
   },
   "browserslist": {
     "production": [
@@ -43,6 +95,15 @@
       "last 1 chrome version",
       "last 1 firefox version",
       "last 1 safari version"
+    ]
+  },
+  "lint-staged": {
+    "src/**/*.{js,jsx,ts,tsx}": [
+      "eslint --fix",
+      "prettier --write"
+    ],
+    "src/**/*.{json,css,md}": [
+      "prettier --write"
     ]
   }
 }

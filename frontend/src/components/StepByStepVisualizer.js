@@ -1,24 +1,24 @@
 import React, { useState, useEffect, useRef } from 'react';
-import { 
-  Box, 
-  Typography, 
-  Paper, 
-  IconButton, 
+import {
+  Box,
+  Typography,
+  Paper,
+  IconButton,
   Slider,
   Card,
   CardContent,
   Grid,
   Chip,
-  Divider
+  Divider,
 } from '@mui/material';
-import { 
-  PlayArrow, 
-  Pause, 
-  SkipNext, 
-  SkipPrevious, 
+import {
+  PlayArrow,
+  Pause,
+  SkipNext,
+  SkipPrevious,
   RestartAlt,
   Speed,
-  Code
+  Code,
 } from '@mui/icons-material';
 
 export default function StepByStepVisualizer({ trace = [], code = '' }) {
@@ -32,7 +32,7 @@ export default function StepByStepVisualizer({ trace = [], code = '' }) {
   useEffect(() => {
     if (isPlaying && autoPlay) {
       intervalRef.current = setInterval(() => {
-        setCurrentStep(prev => {
+        setCurrentStep((prev) => {
           if (prev >= trace.length - 1) {
             setIsPlaying(false);
             return prev;
@@ -59,11 +59,11 @@ export default function StepByStepVisualizer({ trace = [], code = '' }) {
   };
 
   const handleNext = () => {
-    setCurrentStep(prev => Math.min(trace.length - 1, prev + 1));
+    setCurrentStep((prev) => Math.min(trace.length - 1, prev + 1));
   };
 
   const handlePrevious = () => {
-    setCurrentStep(prev => Math.max(0, prev - 1));
+    setCurrentStep((prev) => Math.max(0, prev - 1));
   };
 
   const handleReset = () => {
@@ -90,20 +90,26 @@ export default function StepByStepVisualizer({ trace = [], code = '' }) {
   }
 
   const currentStepData = trace[currentStep] || {};
-  const { line, code_line, locals, data_structures, call_stack, error } = currentStepData;
+  const { line, code_line, locals, data_structures, call_stack, error } =
+    currentStepData;
 
   return (
     <Paper sx={{ p: 3 }}>
       {/* Header with controls */}
-      <Box sx={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', mb: 3 }}>
-        <Typography variant="h5">
-          Step-by-Step Execution
-        </Typography>
+      <Box
+        sx={{
+          display: 'flex',
+          alignItems: 'center',
+          justifyContent: 'space-between',
+          mb: 3,
+        }}
+      >
+        <Typography variant="h5">Step-by-Step Execution</Typography>
         <Box sx={{ display: 'flex', alignItems: 'center', gap: 1 }}>
-          <Chip 
-            label={`Step ${currentStep + 1} of ${trace.length}`} 
-            color="primary" 
-            variant="outlined" 
+          <Chip
+            label={`Step ${currentStep + 1} of ${trace.length}`}
+            color="primary"
+            variant="outlined"
           />
         </Box>
       </Box>
@@ -119,13 +125,18 @@ export default function StepByStepVisualizer({ trace = [], code = '' }) {
         <IconButton onClick={handlePlayPause} color="primary">
           {isPlaying ? <Pause /> : <PlayArrow />}
         </IconButton>
-        <IconButton onClick={handleNext} disabled={currentStep === trace.length - 1}>
+        <IconButton
+          onClick={handleNext}
+          disabled={currentStep === trace.length - 1}
+        >
           <SkipNext />
         </IconButton>
-        
+
         <Divider orientation="vertical" flexItem />
-        
-        <Box sx={{ display: 'flex', alignItems: 'center', gap: 1, minWidth: 200 }}>
+
+        <Box
+          sx={{ display: 'flex', alignItems: 'center', gap: 1, minWidth: 200 }}
+        >
           <Speed fontSize="small" />
           <Slider
             value={playbackSpeed}
@@ -137,7 +148,7 @@ export default function StepByStepVisualizer({ trace = [], code = '' }) {
               { value: 500, label: 'Fast' },
               { value: 1000, label: 'Normal' },
               { value: 2000, label: 'Slow' },
-              { value: 3000, label: 'Very Slow' }
+              { value: 3000, label: 'Very Slow' },
             ]}
             valueLabelDisplay="auto"
           />
@@ -153,13 +164,13 @@ export default function StepByStepVisualizer({ trace = [], code = '' }) {
               <Typography variant="h6" gutterBottom>
                 <Code /> Current Line: {line || 'N/A'}
               </Typography>
-              <Paper 
-                sx={{ 
-                  p: 2, 
-                  backgroundColor: '#f5f5f5', 
+              <Paper
+                sx={{
+                  p: 2,
+                  backgroundColor: '#f5f5f5',
                   fontFamily: 'monospace',
                   fontSize: '14px',
-                  border: '1px solid #e0e0e0'
+                  border: '1px solid #e0e0e0',
                 }}
               >
                 {code_line || 'No code line available'}
@@ -178,8 +189,20 @@ export default function StepByStepVisualizer({ trace = [], code = '' }) {
               {locals && Object.keys(locals).length > 0 ? (
                 <Box>
                   {Object.entries(locals).map(([key, value]) => (
-                    <Box key={key} sx={{ mb: 1, p: 1, backgroundColor: '#f8f9fa', borderRadius: 1 }}>
-                      <Typography variant="body2" fontWeight="bold" color="primary">
+                    <Box
+                      key={key}
+                      sx={{
+                        mb: 1,
+                        p: 1,
+                        backgroundColor: '#f8f9fa',
+                        borderRadius: 1,
+                      }}
+                    >
+                      <Typography
+                        variant="body2"
+                        fontWeight="bold"
+                        color="primary"
+                      >
                         {key}:
                       </Typography>
                       <Typography variant="body2" fontFamily="monospace">
@@ -207,7 +230,15 @@ export default function StepByStepVisualizer({ trace = [], code = '' }) {
               {call_stack && call_stack.length > 0 ? (
                 <Box>
                   {call_stack.map((call, index) => (
-                    <Box key={index} sx={{ mb: 1, p: 1, backgroundColor: '#f8f9fa', borderRadius: 1 }}>
+                    <Box
+                      key={index}
+                      sx={{
+                        mb: 1,
+                        p: 1,
+                        backgroundColor: '#f8f9fa',
+                        borderRadius: 1,
+                      }}
+                    >
                       <Typography variant="body2" fontFamily="monospace">
                         {call}
                       </Typography>
@@ -234,7 +265,11 @@ export default function StepByStepVisualizer({ trace = [], code = '' }) {
                 <Box>
                   {Object.entries(data_structures).map(([key, value]) => (
                     <Box key={key} sx={{ mb: 1 }}>
-                      <Typography variant="body2" fontWeight="bold" color="secondary">
+                      <Typography
+                        variant="body2"
+                        fontWeight="bold"
+                        color="secondary"
+                      >
                         {key}:
                       </Typography>
                       <Typography variant="body2" fontFamily="monospace">
@@ -287,4 +322,4 @@ export default function StepByStepVisualizer({ trace = [], code = '' }) {
       </Box>
     </Paper>
   );
-} 
+}

@@ -1,311 +1,431 @@
 #!/usr/bin/env python3
 """
-Comprehensive test script for enhanced DSA visualization features
+Comprehensive Test Suite for DSA Code Analysis Platform
+Tests all major features and ensures robustness
 """
 
-import requests
+import asyncio
 import json
+import sys
 import time
+from pathlib import Path
+from typing import Dict, Any, List
 
-# Test configuration
-BACKEND_URL = "http://localhost:8000"
+# Add backend to path
+sys.path.append(str(Path(__file__).parent / "backend"))
 
-def test_python_sorting():
-    """Test Python bubble sort with visualization"""
-    print("🧪 Testing Python Bubble Sort...")
+try:
+    import requests
+    import pytest
+    from fastapi.testclient import TestClient
+    from backend.main import app
+    from backend.app.core.config import settings
+except ImportError as e:
+    print(f"❌ Missing dependencies: {e}")
+    print("Please install: pip install requests pytest fastapi")
+    sys.exit(1)
+
+class TestDSAPlatform:
+    """Comprehensive test suite for DSA Platform"""
     
-    code = """def bubble_sort(arr):
-    n = len(arr)
-    for i in range(n):
-        for j in range(0, n - i - 1):
-            if arr[j] > arr[j + 1]:
-                arr[j], arr[j + 1] = arr[j + 1], arr[j]
-        print(f"Pass {i + 1}: {arr}")
-    return arr
-
-# Test bubble sort
-arr = [64, 34, 25, 12, 22, 11, 90]
-print(f"Original array: {arr}")
-sorted_arr = bubble_sort(arr)
-print(f"Sorted array: {sorted_arr}")"""
-
-    payload = {
-        "code": code,
-        "language": "python",
-        "input_data": [],
-        "analysis_type": "full"
-    }
-    
-    try:
-        response = requests.post(f"{BACKEND_URL}/api/v1/analysis/analyze", json=payload)
-        if response.status_code == 200:
-            data = response.json()
-            print("✅ Python sorting analysis successful!")
-            print(f"Input required: {data.get('ast_analysis', {}).get('input_required', False)}")
-            print(f"Execution trace steps: {len(data.get('execution_trace', []))}")
-            
-            # Check for algorithm detection
-            if 'sort' in code.lower():
-                print("✅ Algorithm detection: Sorting algorithm detected")
-            
-            # Check trace data
-            trace = data.get('execution_trace', [])
-            if trace and len(trace) > 0:
-                first_step = trace[0]
-                print(f"✅ First step line: {first_step.get('line')}")
-                print(f"✅ Has data structures: {bool(first_step.get('data_structures'))}")
-                print(f"✅ Has call stack: {bool(first_step.get('call_stack'))}")
-            else:
-                print("⚠️ No execution trace data available")
-        else:
-            print(f"❌ Python sorting analysis failed: {response.status_code}")
-            print(response.text)
-    except Exception as e:
-        print(f"❌ Python sorting test error: {e}")
-
-def test_python_searching():
-    """Test Python binary search with visualization"""
-    print("\n🧪 Testing Python Binary Search...")
-    
-    code = """def binary_search(arr, target):
-    left, right = 0, len(arr) - 1
-    
-    while left <= right:
-        mid = (left + right) // 2
-        print(f"Checking index {mid}, value {arr[mid]}")
+    def __init__(self):
+        self.client = TestClient(app)
+        self.base_url = "http://localhost:8000"
+        self.api_url = f"{self.base_url}/api/v1"
+        self.test_results = []
         
-        if arr[mid] == target:
-            return mid
-        elif arr[mid] < target:
-            left = mid + 1
-        else:
-            right = mid - 1
-    
-    return -1
-
-# Test binary search
-arr = [1, 3, 5, 7, 9, 11, 13, 15, 17, 19]
-target = 7
-print(f"Searching for {target} in {arr}")
-result = binary_search(arr, target)
-print(f"Found at index: {result}")"""
-
-    payload = {
-        "code": code,
-        "language": "python",
-        "input_data": [],
-        "analysis_type": "full"
-    }
-    
-    try:
-        response = requests.post(f"{BACKEND_URL}/api/v1/analysis/analyze", json=payload)
-        if response.status_code == 200:
+    def log_test(self, test_name: str, success: bool, details: str = ""):
+        """Log test results"""
+        status = "✅ PASS" if success else "❌ FAIL"
+        print(f"{status} {test_name}")
+        if details:
+            print(f"   {details}")
+        self.test_results.append({
+            "test": test_name,
+            "success": success,
+            "details": details
+        })
+        
+    def test_health_endpoints(self):
+        """Test all health endpoints"""
+        print("\n🏥 Testing Health Endpoints...")
+        
+        # Test basic health
+        try:
+            response = self.client.get("/health")
+            assert response.status_code == 200
             data = response.json()
-            print("✅ Python searching analysis successful!")
-            print(f"Input required: {data.get('ast_analysis', {}).get('input_required', False)}")
-            print(f"Execution trace steps: {len(data.get('execution_trace', []))}")
+            assert "status" in data
+            assert "version" in data
+            self.log_test("Basic Health Check", True)
+        except Exception as e:
+            self.log_test("Basic Health Check", False, str(e))
             
-            # Check for algorithm detection
-            if 'search' in code.lower():
-                print("✅ Algorithm detection: Searching algorithm detected")
+        # Test API health
+        try:
+            response = self.client.get(f"{self.api_url}/health/")
+            assert response.status_code == 200
+            self.log_test("API Health Check", True)
+        except Exception as e:
+            self.log_test("API Health Check", False, str(e))
             
-            # Check trace data
-            trace = data.get('execution_trace', [])
-            if trace and len(trace) > 0:
-                first_step = trace[0]
-                print(f"✅ First step line: {first_step.get('line')}")
-                print(f"✅ Has data structures: {bool(first_step.get('data_structures'))}")
-            else:
-                print("⚠️ No execution trace data available")
-        else:
-            print(f"❌ Python searching analysis failed: {response.status_code}")
-    except Exception as e:
-        print(f"❌ Python searching test error: {e}")
+        # Test detailed health
+        try:
+            response = self.client.get(f"{self.api_url}/health/detailed")
+            assert response.status_code == 200
+            self.log_test("Detailed Health Check", True)
+        except Exception as e:
+            self.log_test("Detailed Health Check", False, str(e))
+            
+    def test_language_endpoints(self):
+        """Test language support endpoints"""
+        print("\n🌐 Testing Language Support...")
+        
+        # Test supported languages
+        try:
+            response = self.client.get(f"{self.api_url}/languages/supported")
+            assert response.status_code == 200
+            data = response.json()
+            assert isinstance(data, dict)
+            assert "python" in data
+            self.log_test("Supported Languages", True, f"Found {len(data)} languages")
+        except Exception as e:
+            self.log_test("Supported Languages", False, str(e))
+            
+        # Test specific language info
+        try:
+            response = self.client.get(f"{self.api_url}/languages/python")
+            assert response.status_code == 200
+            data = response.json()
+            assert "extensions" in data
+            assert "executor" in data
+            self.log_test("Python Language Info", True)
+        except Exception as e:
+            self.log_test("Python Language Info", False, str(e))
+            
+    def test_analysis_endpoints(self):
+        """Test code analysis endpoints"""
+        print("\n🔍 Testing Code Analysis...")
+        
+        test_code = """
+def fibonacci(n):
+    if n <= 1:
+        return n
+    return fibonacci(n-1) + fibonacci(n-2)
 
-def test_java_sorting():
-    """Test Java bubble sort with visualization"""
-    print("\n🧪 Testing Java Bubble Sort...")
-    
-    code = """public class BubbleSort {
-    public static void bubbleSort(int[] arr) {
-        int n = arr.length;
-        for (int i = 0; i < n; i++) {
-            for (int j = 0; j < n - i - 1; j++) {
-                if (arr[j] > arr[j + 1]) {
-                    // Swap elements
-                    int temp = arr[j];
-                    arr[j] = arr[j + 1];
-                    arr[j + 1] = temp;
+print(fibonacci(10))
+"""
+        
+        # Test basic analysis
+        try:
+            response = self.client.post(
+                f"{self.api_url}/analysis/analyze",
+                json={
+                    "code": test_code,
+                    "language": "python",
+                    "analysis_type": "basic"
                 }
-            }
-            System.out.print("Pass " + (i + 1) + ": ");
-            for (int k = 0; k < n; k++) {
-                System.out.print(arr[k] + " ");
-            }
-            System.out.println();
-        }
-    }
-    
-    public static void main(String[] args) {
-        int[] arr = {64, 34, 25, 12, 22, 11, 90};
-        System.out.print("Original array: ");
-        for (int i : arr) {
-            System.out.print(i + " ");
-        }
-        System.out.println();
+            )
+            assert response.status_code == 200
+            data = response.json()
+            assert "analysis_id" in data
+            self.log_test("Basic Code Analysis", True)
+        except Exception as e:
+            self.log_test("Basic Code Analysis", False, str(e))
+            
+        # Test AST analysis
+        try:
+            response = self.client.post(
+                f"{self.api_url}/analysis/analyze",
+                json={
+                    "code": test_code,
+                    "language": "python",
+                    "analysis_type": "ast"
+                }
+            )
+            assert response.status_code == 200
+            data = response.json()
+            assert "analysis_id" in data
+            self.log_test("AST Analysis", True)
+        except Exception as e:
+            self.log_test("AST Analysis", False, str(e))
+            
+        # Test complexity analysis
+        try:
+            response = self.client.post(
+                f"{self.api_url}/analysis/analyze",
+                json={
+                    "code": test_code,
+                    "language": "python",
+                    "analysis_type": "complexity"
+                }
+            )
+            assert response.status_code == 200
+            data = response.json()
+            assert "analysis_id" in data
+            self.log_test("Complexity Analysis", True)
+        except Exception as e:
+            self.log_test("Complexity Analysis", False, str(e))
+            
+    def test_execution_endpoints(self):
+        """Test code execution endpoints"""
+        print("\n⚡ Testing Code Execution...")
         
-        bubbleSort(arr);
+        test_code = """
+def hello_world():
+    return "Hello, World!"
+
+result = hello_world()
+print(result)
+"""
         
-        System.out.print("Sorted array: ");
-        for (int i : arr) {
-            System.out.print(i + " ");
-        }
-        System.out.println();
-    }
-}"""
-
-    payload = {
-        "code": code,
-        "language": "java",
-        "input_data": [],
-        "analysis_type": "full"
-    }
-    
-    try:
-        response = requests.post(f"{BACKEND_URL}/api/v1/analysis/analyze", json=payload)
-        if response.status_code == 200:
+        # Test code execution
+        try:
+            response = self.client.post(
+                f"{self.api_url}/execution/execute",
+                json={
+                    "code": test_code,
+                    "language": "python",
+                    "input_data": "",
+                    "timeout": 30
+                }
+            )
+            assert response.status_code == 200
             data = response.json()
-            print("✅ Java sorting analysis successful!")
-            print(f"Input required: {data.get('ast_analysis', {}).get('input_required', False)}")
-            print(f"Execution trace steps: {len(data.get('execution_trace', []))}")
+            assert "execution_id" in data
+            self.log_test("Code Execution", True)
+        except Exception as e:
+            self.log_test("Code Execution", False, str(e))
             
-            # Check for algorithm detection
-            if 'sort' in code.lower():
-                print("✅ Algorithm detection: Sorting algorithm detected")
-            
-            # Check trace data
-            trace = data.get('execution_trace', [])
-            if trace and len(trace) > 0:
-                first_step = trace[0]
-                print(f"✅ First step line: {first_step.get('line')}")
-                print(f"✅ Has data structures: {bool(first_step.get('data_structures'))}")
-            else:
-                print("⚠️ No execution trace data available")
-        else:
-            print(f"❌ Java sorting analysis failed: {response.status_code}")
-    except Exception as e:
-        print(f"❌ Java sorting test error: {e}")
-
-def test_input_detection():
-    """Test input detection for both languages"""
-    print("\n🧪 Testing Input Detection...")
-    
-    # Python code with input
-    python_code = """def greet(name):
-    return f"Hello, {name}!"
-
-name = input("Enter your name: ")
-result = greet(name)
-print(result)"""
-    
-    payload = {
-        "code": python_code,
-        "language": "python",
-        "input_data": [],
-        "analysis_type": "full"
-    }
-    
-    try:
-        response = requests.post(f"{BACKEND_URL}/api/v1/analysis/analyze", json=payload)
-        if response.status_code == 200:
+        # Test code testing
+        try:
+            response = self.client.post(
+                f"{self.api_url}/execution/test",
+                json={
+                    "code": test_code,
+                    "language": "python",
+                    "test_cases": [
+                        {"input": "", "expected_output": "Hello, World!"}
+                    ]
+                }
+            )
+            assert response.status_code == 200
             data = response.json()
-            print("✅ Python input detection successful!")
-            print(f"Input required: {data.get('ast_analysis', {}).get('input_required', False)}")
-            print(f"Input schema: {data.get('ast_analysis', {}).get('input_schema', [])}")
-        else:
-            print(f"❌ Python input detection failed: {response.status_code}")
-    except Exception as e:
-        print(f"❌ Python input detection error: {e}")
-
-def test_visualization_service():
-    """Test enhanced visualization service"""
-    print("\n🧪 Testing Visualization Service...")
-    
-    try:
-        response = requests.get(f"{BACKEND_URL}/health")
-        if response.status_code == 200:
-            data = response.json()
-            print("✅ Backend health check successful!")
-            print(f"✅ Services: {data.get('services', {})}")
+            assert "test_results" in data
+            self.log_test("Code Testing", True)
+        except Exception as e:
+            self.log_test("Code Testing", False, str(e))
             
-            # Check if visualization service is available
-            if data.get('services', {}).get('visualization', False):
-                print("✅ Visualization service is available")
-            else:
-                print("⚠️ Visualization service status unknown")
-        else:
-            print(f"❌ Backend health check failed: {response.status_code}")
-    except Exception as e:
-        print(f"❌ Visualization service test error: {e}")
-
-def test_frontend_ready():
-    """Test if frontend is ready"""
-    print("\n🧪 Testing Frontend Readiness...")
-    
-    try:
-        response = requests.get("http://localhost:3000", timeout=5)
-        if response.status_code == 200:
-            print("✅ Frontend is running on http://localhost:3000")
-        else:
-            print(f"⚠️ Frontend responded with status: {response.status_code}")
-    except requests.exceptions.ConnectionError:
-        print("⚠️ Frontend not accessible (may not be running)")
-    except Exception as e:
-        print(f"❌ Frontend test error: {e}")
+    def test_optimization_endpoints(self):
+        """Test optimization endpoints"""
+        print("\n🚀 Testing Code Optimization...")
+        
+        test_code = """
+def slow_fibonacci(n):
+    if n <= 1:
+        return n
+    return slow_fibonacci(n-1) + slow_fibonacci(n-2)
+"""
+        
+        # Test optimization suggestions
+        try:
+            response = self.client.post(
+                f"{self.api_url}/optimization/suggest",
+                json={
+                    "code": test_code,
+                    "language": "python",
+                    "optimization_type": "performance"
+                }
+            )
+            assert response.status_code == 200
+            data = response.json()
+            assert "suggestions" in data
+            self.log_test("Optimization Suggestions", True)
+        except Exception as e:
+            self.log_test("Optimization Suggestions", False, str(e))
+            
+    def test_batch_endpoints(self):
+        """Test batch processing endpoints"""
+        print("\n📦 Testing Batch Processing...")
+        
+        test_files = [
+            {
+                "filename": "test1.py",
+                "code": "print('Hello from file 1')"
+            },
+            {
+                "filename": "test2.py", 
+                "code": "print('Hello from file 2')"
+            }
+        ]
+        
+        # Test batch analysis
+        try:
+            response = self.client.post(
+                f"{self.api_url}/analysis/batch-analyze",
+                json={
+                    "files": test_files,
+                    "analysis_type": "basic"
+                }
+            )
+            assert response.status_code == 200
+            data = response.json()
+            assert "batch_id" in data
+            self.log_test("Batch Analysis", True)
+        except Exception as e:
+            self.log_test("Batch Analysis", False, str(e))
+            
+    def test_error_handling(self):
+        """Test error handling and edge cases"""
+        print("\n🛡️ Testing Error Handling...")
+        
+        # Test invalid code
+        try:
+            response = self.client.post(
+                f"{self.api_url}/analysis/analyze",
+                json={
+                    "code": "invalid python code {",
+                    "language": "python"
+                }
+            )
+            # Should handle gracefully
+            assert response.status_code in [200, 400, 422]
+            self.log_test("Invalid Code Handling", True)
+        except Exception as e:
+            self.log_test("Invalid Code Handling", False, str(e))
+            
+        # Test unsupported language
+        try:
+            response = self.client.post(
+                f"{self.api_url}/analysis/analyze",
+                json={
+                    "code": "print('test')",
+                    "language": "unsupported_lang"
+                }
+            )
+            # Should handle gracefully
+            assert response.status_code in [200, 400, 422]
+            self.log_test("Unsupported Language Handling", True)
+        except Exception as e:
+            self.log_test("Unsupported Language Handling", False, str(e))
+            
+        # Test missing parameters
+        try:
+            response = self.client.post(
+                f"{self.api_url}/analysis/analyze",
+                json={}
+            )
+            # Should return validation error
+            assert response.status_code == 422
+            self.log_test("Missing Parameters Handling", True)
+        except Exception as e:
+            self.log_test("Missing Parameters Handling", False, str(e))
+            
+    def test_performance(self):
+        """Test performance and response times"""
+        print("\n⚡ Testing Performance...")
+        
+        test_code = "print('Performance test')"
+        
+        # Test response time
+        try:
+            start_time = time.time()
+            response = self.client.post(
+                f"{self.api_url}/analysis/analyze",
+                json={
+                    "code": test_code,
+                    "language": "python"
+                }
+            )
+            end_time = time.time()
+            response_time = end_time - start_time
+            
+            assert response.status_code == 200
+            assert response_time < 5.0  # Should respond within 5 seconds
+            
+            self.log_test("Response Time", True, f"Response time: {response_time:.2f}s")
+        except Exception as e:
+            self.log_test("Response Time", False, str(e))
+            
+    def test_frontend_connectivity(self):
+        """Test frontend connectivity"""
+        print("\n🌐 Testing Frontend Connectivity...")
+        
+        try:
+            # Test if frontend can reach backend
+            response = requests.get(f"{self.base_url}/health", timeout=5)
+            assert response.status_code == 200
+            self.log_test("Frontend-Backend Connectivity", True)
+        except Exception as e:
+            self.log_test("Frontend-Backend Connectivity", False, str(e))
+            
+    def run_all_tests(self):
+        """Run all tests"""
+        print("🧪 Starting Comprehensive Test Suite")
+        print("=" * 50)
+        
+        self.test_health_endpoints()
+        self.test_language_endpoints()
+        self.test_analysis_endpoints()
+        self.test_execution_endpoints()
+        self.test_optimization_endpoints()
+        self.test_batch_endpoints()
+        self.test_error_handling()
+        self.test_performance()
+        self.test_frontend_connectivity()
+        
+        # Summary
+        print("\n" + "=" * 50)
+        print("📊 Test Summary")
+        print("=" * 50)
+        
+        total_tests = len(self.test_results)
+        passed_tests = sum(1 for result in self.test_results if result["success"])
+        failed_tests = total_tests - passed_tests
+        
+        print(f"Total Tests: {total_tests}")
+        print(f"✅ Passed: {passed_tests}")
+        print(f"❌ Failed: {failed_tests}")
+        print(f"Success Rate: {(passed_tests/total_tests)*100:.1f}%")
+        
+        if failed_tests > 0:
+            print("\n❌ Failed Tests:")
+            for result in self.test_results:
+                if not result["success"]:
+                    print(f"  - {result['test']}: {result['details']}")
+                    
+        return failed_tests == 0
 
 def main():
-    print("🚀 Comprehensive DSA Visualization Feature Test")
+    """Main test runner"""
+    print("🚀 DSA Code Analysis Platform - Comprehensive Test Suite")
     print("=" * 60)
     
-    # Test backend health first
-    test_visualization_service()
+    # Check if backend is running
+    try:
+        response = requests.get("http://localhost:8000/health", timeout=5)
+        if response.status_code != 200:
+            print("❌ Backend is not running or not responding correctly")
+            print("Please start the backend server first:")
+            print("cd backend && python main.py")
+            return False
+    except Exception:
+        print("❌ Cannot connect to backend server")
+        print("Please start the backend server first:")
+        print("cd backend && python main.py")
+        return False
+        
+    # Run tests
+    tester = TestDSAPlatform()
+    success = tester.run_all_tests()
     
-    # Test core features
-    test_python_sorting()
-    test_python_searching()
-    test_java_sorting()
-    test_input_detection()
-    
-    # Test frontend
-    test_frontend_ready()
-    
-    print("\n" + "=" * 60)
-    print("🎉 Comprehensive testing completed!")
-    print("\n📋 Summary of Enhanced Features:")
-    print("✅ Step-by-step execution tracing for Python and Java")
-    print("✅ Data structure visualization (stacks, queues, arrays, graphs)")
-    print("✅ Algorithm-specific visualizations (sorting, searching)")
-    print("✅ Input detection and dynamic form generation")
-    print("✅ Interactive playback controls with speed adjustment")
-    print("✅ Code examples for common DSA problems")
-    print("✅ Enhanced visualization service with matplotlib")
-    print("✅ Real-time variable and call stack tracking")
-    
-    print("\n🌐 To use the enhanced features:")
-    print("1. Backend: http://localhost:8000 (should be running)")
-    print("2. Frontend: http://localhost:3000 (start with 'npm start' in frontend/)")
-    print("3. Go to Analyze page and try the code examples")
-    print("4. Use the 'Show Examples' button to load pre-built DSA examples")
-    print("5. Explore the Trace and Algorithm tabs for visualizations")
-    
-    print("\n📚 Available Examples:")
-    print("- Palindrome Checker (Stack)")
-    print("- Fibonacci (Recursive)")
-    print("- Bubble Sort")
-    print("- Binary Search")
-    print("- Graph Traversal (BFS)")
-    print("- Tree Traversal")
-    print("- Queue Implementation")
+    if success:
+        print("\n🎉 All tests passed! The platform is working correctly.")
+    else:
+        print("\n⚠️ Some tests failed. Please check the issues above.")
+        
+    return success
 
 if __name__ == "__main__":
-    main() 
+    success = main()
+    sys.exit(0 if success else 1) 

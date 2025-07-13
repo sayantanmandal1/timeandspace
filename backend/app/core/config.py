@@ -25,9 +25,9 @@ class Settings:
     ALLOWED_HOSTS: List[str] = os.getenv("ALLOWED_HOSTS", "http://localhost:3000,http://127.0.0.1:3000,http://localhost:8080,http://127.0.0.1:8080").split(",")
     
     # Database settings - Enhanced with better defaults and error handling
-    DATABASE_URL: str = os.getenv("DATABASE_URL", "postgresql://user:password@localhost/dsa_analysis")
-    DATABASE_POOL_SIZE: int = int(os.getenv("DATABASE_POOL_SIZE", "20"))
-    DATABASE_MAX_OVERFLOW: int = int(os.getenv("DATABASE_MAX_OVERFLOW", "30"))
+    DATABASE_URL: str = os.getenv("DATABASE_URL", "sqlite+aiosqlite:///./dsa_analysis.db")
+    DATABASE_POOL_SIZE: int = int(os.getenv("DATABASE_POOL_SIZE", "5"))
+    DATABASE_MAX_OVERFLOW: int = int(os.getenv("DATABASE_MAX_OVERFLOW", "10"))
     
     # Redis settings - Made optional with fallback
     REDIS_URL: Optional[str] = os.getenv("REDIS_URL")
@@ -250,7 +250,7 @@ class Settings:
     @classmethod
     def validate_database_url(cls) -> bool:
         """Validate that DATABASE_URL is properly configured"""
-        if not cls.DATABASE_URL or cls.DATABASE_URL == "postgresql://user:password@localhost/dsa_analysis":
+        if not cls.DATABASE_URL or cls.DATABASE_URL == "sqlite+aiosqlite:///./dsa_analysis.db":
             return False
         return True
     

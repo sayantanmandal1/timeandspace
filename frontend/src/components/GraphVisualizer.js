@@ -1,7 +1,18 @@
 import React, { useEffect, useRef, useState } from 'react';
-import { Box, Button, Typography, Paper, Card, CardContent, Grid } from '@mui/material';
+import {
+  Box,
+  Button,
+  Typography,
+  Paper,
+  Card,
+  CardContent,
+  Grid,
+} from '@mui/material';
 
-export default function GraphVisualizer({ data, title = "Graph Visualization" }) {
+export default function GraphVisualizer({
+  data,
+  title = 'Graph Visualization',
+}) {
   const [graphData, setGraphData] = useState(null);
 
   useEffect(() => {
@@ -11,17 +22,17 @@ export default function GraphVisualizer({ data, title = "Graph Visualization" })
   }, [data]);
 
   const renderNode = (node, index) => (
-    <Card 
-      key={index} 
-      variant="outlined" 
-      sx={{ 
-        p: 2, 
-        mb: 1, 
+    <Card
+      key={index}
+      variant="outlined"
+      sx={{
+        p: 2,
+        mb: 1,
         backgroundColor: '#e3f2fd',
         border: '2px solid #2196f3',
         borderRadius: 2,
         textAlign: 'center',
-        minWidth: 80
+        minWidth: 80,
       }}
     >
       <Typography variant="h6" color="primary">
@@ -31,16 +42,16 @@ export default function GraphVisualizer({ data, title = "Graph Visualization" })
   );
 
   const renderEdge = (edge, index) => (
-    <Box 
-      key={index} 
-      sx={{ 
-        display: 'flex', 
-        alignItems: 'center', 
-        gap: 1, 
+    <Box
+      key={index}
+      sx={{
+        display: 'flex',
+        alignItems: 'center',
+        gap: 1,
         mb: 1,
         p: 1,
         backgroundColor: '#f5f5f5',
-        borderRadius: 1
+        borderRadius: 1,
       }}
     >
       <Typography variant="body2" fontWeight="bold">
@@ -75,7 +86,7 @@ export default function GraphVisualizer({ data, title = "Graph Visualization" })
       <Typography variant="h5" gutterBottom>
         {title}
       </Typography>
-      
+
       <Grid container spacing={3}>
         {/* Nodes */}
         <Grid item xs={12} md={6}>
@@ -136,7 +147,9 @@ export default function GraphVisualizer({ data, title = "Graph Visualization" })
                 <Grid item xs={6} md={3}>
                   <Box textAlign="center">
                     <Typography variant="h4" color="success">
-                      {nodes.length > 0 ? (edges.length / nodes.length).toFixed(2) : 0}
+                      {nodes.length > 0
+                        ? (edges.length / nodes.length).toFixed(2)
+                        : 0}
                     </Typography>
                     <Typography variant="body2" color="text.secondary">
                       Avg Degree
@@ -160,4 +173,4 @@ export default function GraphVisualizer({ data, title = "Graph Visualization" })
       </Grid>
     </Paper>
   );
-} 
+}

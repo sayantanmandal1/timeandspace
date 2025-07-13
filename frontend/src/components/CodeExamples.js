@@ -1,11 +1,19 @@
 import React from 'react';
-import { Box, Typography, Card, CardContent, Button, Grid } from '@mui/material';
+import {
+  Box,
+  Typography,
+  Card,
+  CardContent,
+  Button,
+  Grid,
+} from '@mui/material';
 
 const examples = {
   python: {
     palindrome: {
-      title: "Palindrome Checker (Stack)",
-      description: "Check if a string is a palindrome using stack data structure",
+      title: 'Palindrome Checker (Stack)',
+      description:
+        'Check if a string is a palindrome using stack data structure',
       code: `def is_palindrome(s):
     # Remove non-alphanumeric characters and convert to lowercase
     s = ''.join(c.lower() for c in s if c.isalnum())
@@ -29,11 +37,11 @@ const examples = {
 # Test the function
 test_string = "A man, a plan, a canal: Panama"
 result = is_palindrome(test_string)
-print(f"'{test_string}' is palindrome: {result}")`
+print(f"'{test_string}' is palindrome: {result}")`,
     },
     fibonacci: {
-      title: "Fibonacci (Recursive)",
-      description: "Calculate Fibonacci numbers using recursion",
+      title: 'Fibonacci (Recursive)',
+      description: 'Calculate Fibonacci numbers using recursion',
       code: `def fibonacci(n):
     if n <= 1:
         return n
@@ -42,11 +50,11 @@ print(f"'{test_string}' is palindrome: {result}")`
 # Test the function
 n = 10
 result = fibonacci(n)
-print(f"Fibonacci({n}) = {result}")`
+print(f"Fibonacci({n}) = {result}")`,
     },
     graph: {
-      title: "Graph Traversal (BFS)",
-      description: "Breadth-first search on a graph",
+      title: 'Graph Traversal (BFS)',
+      description: 'Breadth-first search on a graph',
       code: `from collections import defaultdict, deque
 
 def bfs(graph, start):
@@ -77,11 +85,11 @@ graph[5] = [2]
 
 # Test BFS
 result = bfs(graph, 0)
-print(f"BFS traversal: {result}")`
+print(f"BFS traversal: {result}")`,
     },
     sorting: {
-      title: "Bubble Sort",
-      description: "Simple sorting algorithm with step-by-step visualization",
+      title: 'Bubble Sort',
+      description: 'Simple sorting algorithm with step-by-step visualization',
       code: `def bubble_sort(arr):
     n = len(arr)
     for i in range(n):
@@ -95,11 +103,11 @@ print(f"BFS traversal: {result}")`
 arr = [64, 34, 25, 12, 22, 11, 90]
 print(f"Original array: {arr}")
 sorted_arr = bubble_sort(arr)
-print(f"Sorted array: {sorted_arr}")`
+print(f"Sorted array: {sorted_arr}")`,
     },
     searching: {
-      title: "Binary Search",
-      description: "Efficient searching algorithm for sorted arrays",
+      title: 'Binary Search',
+      description: 'Efficient searching algorithm for sorted arrays',
       code: `def binary_search(arr, target):
     left, right = 0, len(arr) - 1
     
@@ -121,11 +129,11 @@ arr = [1, 3, 5, 7, 9, 11, 13, 15, 17, 19]
 target = 7
 print(f"Searching for {target} in {arr}")
 result = binary_search(arr, target)
-print(f"Found at index: {result}")`
+print(f"Found at index: {result}")`,
     },
     tree: {
-      title: "Binary Tree Traversal",
-      description: "In-order, pre-order, and post-order tree traversals",
+      title: 'Binary Tree Traversal',
+      description: 'In-order, pre-order, and post-order tree traversals',
       code: `class TreeNode:
     def __init__(self, val=0):
         self.val = val
@@ -165,13 +173,13 @@ preorder_traversal(root)
 print()
 print("Post-order traversal:", end=" ")
 postorder_traversal(root)
-print()`
-    }
+print()`,
+    },
   },
   java: {
     palindrome: {
-      title: "Palindrome Checker (Stack)",
-      description: "Check if a string is a palindrome using Stack",
+      title: 'Palindrome Checker (Stack)',
+      description: 'Check if a string is a palindrome using Stack',
       code: `import java.util.*;
 
 public class PalindromeChecker {
@@ -204,11 +212,11 @@ public class PalindromeChecker {
         boolean result = isPalindrome(testString);
         System.out.println("'" + testString + "' is palindrome: " + result);
     }
-}`
+}`,
     },
     fibonacci: {
-      title: "Fibonacci (Recursive)",
-      description: "Calculate Fibonacci numbers using recursion",
+      title: 'Fibonacci (Recursive)',
+      description: 'Calculate Fibonacci numbers using recursion',
       code: `public class Fibonacci {
     public static int fibonacci(int n) {
         if (n <= 1) {
@@ -222,11 +230,11 @@ public class PalindromeChecker {
         int result = fibonacci(n);
         System.out.println("Fibonacci(" + n + ") = " + result);
     }
-}`
+}`,
     },
     queue: {
-      title: "Queue Implementation",
-      description: "Simple queue implementation using LinkedList",
+      title: 'Queue Implementation',
+      description: 'Simple queue implementation using LinkedList',
       code: `import java.util.*;
 
 public class QueueExample {
@@ -246,11 +254,11 @@ public class QueueExample {
             System.out.println("Dequeued: " + element);
         }
     }
-}`
+}`,
     },
     sorting: {
-      title: "Bubble Sort",
-      description: "Bubble sort implementation with step-by-step output",
+      title: 'Bubble Sort',
+      description: 'Bubble sort implementation with step-by-step output',
       code: `public class BubbleSort {
     public static void bubbleSort(int[] arr) {
         int n = arr.length;
@@ -287,11 +295,11 @@ public class QueueExample {
         }
         System.out.println();
     }
-}`
+}`,
     },
     searching: {
-      title: "Binary Search",
-      description: "Binary search implementation for sorted arrays",
+      title: 'Binary Search',
+      description: 'Binary search implementation for sorted arrays',
       code: `public class BinarySearch {
     public static int binarySearch(int[] arr, int target) {
         int left = 0;
@@ -326,11 +334,11 @@ public class QueueExample {
         int result = binarySearch(arr, target);
         System.out.println("Found at index: " + result);
     }
-}`
+}`,
     },
     tree: {
-      title: "Binary Tree Implementation",
-      description: "Binary tree with traversal methods",
+      title: 'Binary Tree Implementation',
+      description: 'Binary tree with traversal methods',
       code: `public class BinaryTree {
     static class TreeNode {
         int val;
@@ -386,9 +394,9 @@ public class QueueExample {
         postorderTraversal(root);
         System.out.println();
     }
-}`
-    }
-  }
+}`,
+    },
+  },
 };
 
 export default function CodeExamples({ language, onSelectExample }) {
@@ -402,7 +410,7 @@ export default function CodeExamples({ language, onSelectExample }) {
       <Typography variant="body2" color="text.secondary" sx={{ mb: 2 }}>
         Click on an example to load it into the editor
       </Typography>
-      
+
       <Grid container spacing={2}>
         {Object.entries(languageExamples).map(([key, example]) => (
           <Grid item xs={12} md={6} key={key}>
@@ -411,11 +419,15 @@ export default function CodeExamples({ language, onSelectExample }) {
                 <Typography variant="h6" gutterBottom>
                   {example.title}
                 </Typography>
-                <Typography variant="body2" color="text.secondary" sx={{ mb: 2 }}>
+                <Typography
+                  variant="body2"
+                  color="text.secondary"
+                  sx={{ mb: 2 }}
+                >
                   {example.description}
                 </Typography>
-                <Button 
-                  variant="contained" 
+                <Button
+                  variant="contained"
                   size="small"
                   onClick={() => onSelectExample(example.code)}
                   fullWidth
@@ -429,4 +441,4 @@ export default function CodeExamples({ language, onSelectExample }) {
       </Grid>
     </Box>
   );
-} 
+}

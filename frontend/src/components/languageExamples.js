@@ -801,7 +801,7 @@ binarySearch xs target = binarySearchHelper xs target 0 (length xs - 1)
   where
     binarySearchHelper xs target left right
       | left > right = Nothing
-      | otherwise = let mid = (left + right) `div` 2
+      | otherwise = let mid = (left + right) \`div\` 2
                     in case compare (xs !! mid) target of
                          EQ -> Just mid
                          LT -> binarySearchHelper xs target (mid + 1) right
@@ -1137,5 +1137,5 @@ This is a comprehensive platform for analyzing Data Structures and Algorithms co
 6. Graph Traversal
 7. Tree Traversal
 
-Start coding in your preferred language!`
-}; 
+Start coding in your preferred language!`,
+};

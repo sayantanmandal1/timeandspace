@@ -21,7 +21,7 @@ import {
   Accordion,
   AccordionSummary,
   AccordionDetails,
-  Avatar
+  Avatar,
 } from '@mui/material';
 import {
   Language as LanguageIcon,
@@ -35,183 +35,268 @@ import {
   PlayArrow as PlayArrowIcon,
   Assessment as AssessmentIcon,
   Info as InfoIcon,
-  Star as StarIcon
+  Star as StarIcon,
 } from '@mui/icons-material';
 
 const languages = [
   {
     name: 'Python',
     icon: '🐍',
-    description: 'High-level, interpreted programming language known for its simplicity and readability.',
+    description:
+      'High-level, interpreted programming language known for its simplicity and readability.',
     features: {
       execution: true,
       analysis: true,
       optimization: true,
       visualization: true,
       input_detection: true,
-      step_by_step: true
+      step_by_step: true,
     },
     complexity: 'Easy to Learn',
     performance: 'Good',
     memory: 'Moderate',
-    use_cases: ['Data Science', 'Web Development', 'Automation', 'AI/ML']
+    use_cases: ['Data Science', 'Web Development', 'Automation', 'AI/ML'],
   },
   {
     name: 'Java',
     icon: '☕',
-    description: 'Object-oriented programming language designed for portability and performance.',
+    description:
+      'Object-oriented programming language designed for portability and performance.',
     features: {
       execution: true,
       analysis: true,
       optimization: true,
       visualization: true,
       input_detection: true,
-      step_by_step: true
+      step_by_step: true,
     },
     complexity: 'Moderate',
     performance: 'Excellent',
     memory: 'High',
-    use_cases: ['Enterprise Software', 'Android Development', 'Web Applications', 'Big Data']
+    use_cases: [
+      'Enterprise Software',
+      'Android Development',
+      'Web Applications',
+      'Big Data',
+    ],
   },
   {
     name: 'JavaScript',
     icon: '🟨',
-    description: 'Dynamic programming language primarily used for web development and browser scripting.',
+    description:
+      'Dynamic programming language primarily used for web development and browser scripting.',
     features: {
       execution: true,
       analysis: true,
       optimization: true,
       visualization: true,
       input_detection: false,
-      step_by_step: false
+      step_by_step: false,
     },
     complexity: 'Easy to Learn',
     performance: 'Good',
     memory: 'Moderate',
-    use_cases: ['Web Development', 'Frontend', 'Backend (Node.js)', 'Mobile Apps']
+    use_cases: [
+      'Web Development',
+      'Frontend',
+      'Backend (Node.js)',
+      'Mobile Apps',
+    ],
   },
   {
     name: 'C++',
     icon: '🔷',
-    description: 'High-performance programming language with low-level memory manipulation capabilities.',
+    description:
+      'High-performance programming language with low-level memory manipulation capabilities.',
     features: {
       execution: true,
       analysis: true,
       optimization: true,
       visualization: false,
       input_detection: false,
-      step_by_step: false
+      step_by_step: false,
     },
     complexity: 'Advanced',
     performance: 'Excellent',
     memory: 'Low',
-    use_cases: ['System Programming', 'Game Development', 'Embedded Systems', 'High-Performance Computing']
+    use_cases: [
+      'System Programming',
+      'Game Development',
+      'Embedded Systems',
+      'High-Performance Computing',
+    ],
   },
   {
     name: 'C',
     icon: '🔵',
-    description: 'General-purpose programming language with direct hardware access and minimal abstraction.',
+    description:
+      'General-purpose programming language with direct hardware access and minimal abstraction.',
     features: {
       execution: true,
       analysis: true,
       optimization: true,
       visualization: false,
       input_detection: false,
-      step_by_step: false
+      step_by_step: false,
     },
     complexity: 'Advanced',
     performance: 'Excellent',
     memory: 'Very Low',
-    use_cases: ['System Programming', 'Embedded Systems', 'Operating Systems', 'Device Drivers']
+    use_cases: [
+      'System Programming',
+      'Embedded Systems',
+      'Operating Systems',
+      'Device Drivers',
+    ],
   },
   {
     name: 'C#',
     icon: '💜',
-    description: 'Modern object-oriented language developed by Microsoft for the .NET framework.',
+    description:
+      'Modern object-oriented language developed by Microsoft for the .NET framework.',
     features: {
       execution: false,
       analysis: false,
       optimization: false,
       visualization: false,
       input_detection: false,
-      step_by_step: false
+      step_by_step: false,
     },
     complexity: 'Moderate',
     performance: 'Good',
     memory: 'Moderate',
-    use_cases: ['Windows Applications', 'Game Development', 'Web Development', 'Mobile Apps']
+    use_cases: [
+      'Windows Applications',
+      'Game Development',
+      'Web Development',
+      'Mobile Apps',
+    ],
   },
   {
     name: 'Go',
     icon: '🔵',
-    description: 'Statically typed, compiled language designed for simplicity and concurrent programming.',
+    description:
+      'Statically typed, compiled language designed for simplicity and concurrent programming.',
     features: {
       execution: false,
       analysis: false,
       optimization: false,
       visualization: false,
       input_detection: false,
-      step_by_step: false
+      step_by_step: false,
     },
     complexity: 'Easy to Learn',
     performance: 'Excellent',
     memory: 'Low',
-    use_cases: ['Web Services', 'Cloud Computing', 'DevOps Tools', 'Microservices']
+    use_cases: [
+      'Web Services',
+      'Cloud Computing',
+      'DevOps Tools',
+      'Microservices',
+    ],
   },
   {
     name: 'Rust',
     icon: '🦀',
-    description: 'Systems programming language focused on safety, speed, and concurrency.',
+    description:
+      'Systems programming language focused on safety, speed, and concurrency.',
     features: {
       execution: false,
       analysis: false,
       optimization: false,
       visualization: false,
       input_detection: false,
-      step_by_step: false
+      step_by_step: false,
     },
     complexity: 'Advanced',
     performance: 'Excellent',
     memory: 'Very Low',
-    use_cases: ['System Programming', 'WebAssembly', 'Embedded Systems', 'Performance-Critical Applications']
-  }
+    use_cases: [
+      'System Programming',
+      'WebAssembly',
+      'Embedded Systems',
+      'Performance-Critical Applications',
+    ],
+  },
 ];
 
 const features = [
-  { key: 'execution', name: 'Code Execution', description: 'Run code and see output' },
-  { key: 'analysis', name: 'Code Analysis', description: 'AST analysis and complexity calculation' },
-  { key: 'optimization', name: 'Optimization', description: 'Get optimization suggestions' },
-  { key: 'visualization', name: 'Visualization', description: 'Step-by-step execution visualization' },
-  { key: 'input_detection', name: 'Input Detection', description: 'Automatic input requirement detection' },
-  { key: 'step_by_step', name: 'Step-by-Step', description: 'Detailed execution tracing' }
+  {
+    key: 'execution',
+    name: 'Code Execution',
+    description: 'Run code and see output',
+  },
+  {
+    key: 'analysis',
+    name: 'Code Analysis',
+    description: 'AST analysis and complexity calculation',
+  },
+  {
+    key: 'optimization',
+    name: 'Optimization',
+    description: 'Get optimization suggestions',
+  },
+  {
+    key: 'visualization',
+    name: 'Visualization',
+    description: 'Step-by-step execution visualization',
+  },
+  {
+    key: 'input_detection',
+    name: 'Input Detection',
+    description: 'Automatic input requirement detection',
+  },
+  {
+    key: 'step_by_step',
+    name: 'Step-by-Step',
+    description: 'Detailed execution tracing',
+  },
 ];
 
 export default function LanguagesPage() {
   const getFeatureIcon = (supported) => {
-    return supported ? <CheckCircleIcon color="success" /> : <CheckCircleIcon color="disabled" />;
+    return supported ? (
+      <CheckCircleIcon color="success" />
+    ) : (
+      <CheckCircleIcon color="disabled" />
+    );
   };
 
   const getComplexityColor = (complexity) => {
     switch (complexity) {
-      case 'Easy to Learn': return 'success';
-      case 'Moderate': return 'warning';
-      case 'Advanced': return 'error';
-      default: return 'default';
+      case 'Easy to Learn':
+        return 'success';
+      case 'Moderate':
+        return 'warning';
+      case 'Advanced':
+        return 'error';
+      default:
+        return 'default';
     }
   };
 
   const getPerformanceColor = (performance) => {
     switch (performance) {
-      case 'Excellent': return 'success';
-      case 'Good': return 'primary';
-      case 'Moderate': return 'warning';
-      default: return 'default';
+      case 'Excellent':
+        return 'success';
+      case 'Good':
+        return 'primary';
+      case 'Moderate':
+        return 'warning';
+      default:
+        return 'default';
     }
   };
 
   return (
     <Container maxWidth="xl" sx={{ py: 4 }}>
-      <Typography variant="h3" component="h1" gutterBottom align="center" sx={{ mb: 4 }}>
+      <Typography
+        variant="h3"
+        component="h1"
+        gutterBottom
+        align="center"
+        sx={{ mb: 4 }}
+      >
         Supported Programming Languages
       </Typography>
       {/* Page Header */}
@@ -220,7 +305,8 @@ export default function LanguagesPage() {
           Supported Languages
         </Typography>
         <Typography variant="body1" color="#666">
-          Explore the programming languages supported by our platform and their available features.
+          Explore the programming languages supported by our platform and their
+          available features.
         </Typography>
       </Box>
 
@@ -255,12 +341,16 @@ export default function LanguagesPage() {
 
       {/* Add a CardActions section with a Button (dummy) */}
       <CardActions>
-        <Button size="small" variant="outlined">Learn More</Button>
+        <Button size="small" variant="outlined">
+          Learn More
+        </Button>
       </CardActions>
 
       {/* Add a Tooltip and IconButton for favorite */}
       <Tooltip title="Mark as favorite">
-        <IconButton color="warning"><StarIcon /></IconButton>
+        <IconButton color="warning">
+          <StarIcon />
+        </IconButton>
       </Tooltip>
 
       {/* Add an Accordion for extra info */}
@@ -281,7 +371,9 @@ export default function LanguagesPage() {
             <InfoIcon color="info" />
             <StarIcon color="warning" />
           </Box>
-          <Typography variant="body2">Icons representing language features.</Typography>
+          <Typography variant="body2">
+            Icons representing language features.
+          </Typography>
         </AccordionDetails>
       </Accordion>
 
@@ -289,25 +381,29 @@ export default function LanguagesPage() {
       <Grid container spacing={3}>
         {languages.map((language) => (
           <Grid item xs={12} md={6} lg={4} key={language.name}>
-            <Card sx={{
-              height: '100%',
-              display: 'flex',
-              flexDirection: 'column',
-              transition: 'transform 0.2s, box-shadow 0.2s',
-              '&:hover': {
-                transform: 'translateY(-4px)',
-                boxShadow: 4
-              }
-            }}>
+            <Card
+              sx={{
+                height: '100%',
+                display: 'flex',
+                flexDirection: 'column',
+                transition: 'transform 0.2s, box-shadow 0.2s',
+                '&:hover': {
+                  transform: 'translateY(-4px)',
+                  boxShadow: 4,
+                },
+              }}
+            >
               <CardContent sx={{ flexGrow: 1 }}>
                 {/* Language Header */}
                 <Box display="flex" alignItems="center" gap={2} mb={2}>
-                  <Avatar sx={{
-                    width: 48,
-                    height: 48,
-                    fontSize: '24px',
-                    backgroundColor: '#f5f5f5'
-                  }}>
+                  <Avatar
+                    sx={{
+                      width: 48,
+                      height: 48,
+                      fontSize: '24px',
+                      backgroundColor: '#f5f5f5',
+                    }}
+                  >
                     {language.icon}
                   </Avatar>
                   <Box>
@@ -332,7 +428,11 @@ export default function LanguagesPage() {
                 </Box>
 
                 {/* Description */}
-                <Typography variant="body2" color="textSecondary" sx={{ mb: 2 }}>
+                <Typography
+                  variant="body2"
+                  color="textSecondary"
+                  sx={{ mb: 2 }}
+                >
                   {language.description}
                 </Typography>
 
@@ -373,7 +473,11 @@ export default function LanguagesPage() {
                 </Box>
 
                 {/* Performance Info */}
-                <Box mt={2} p={1} sx={{ backgroundColor: '#f8f9fa', borderRadius: 1 }}>
+                <Box
+                  mt={2}
+                  p={1}
+                  sx={{ backgroundColor: '#f8f9fa', borderRadius: 1 }}
+                >
                   <Typography variant="caption" color="textSecondary">
                     Memory Usage: {language.memory}
                   </Typography>
@@ -390,27 +494,32 @@ export default function LanguagesPage() {
           Coming Soon
         </Typography>
         <Typography variant="body1" color="textSecondary" paragraph>
-          We're actively working on expanding language support. The following languages are planned for future releases:
+          We're actively working on expanding language support. The following
+          languages are planned for future releases:
         </Typography>
 
         <Grid container spacing={2}>
-          {languages.filter(lang => !lang.features.execution).map((language) => (
-            <Grid item xs={12} sm={6} md={3} key={language.name}>
-              <Box display="flex" alignItems="center" gap={1}>
-                <Avatar sx={{
-                  width: 32,
-                  height: 32,
-                  fontSize: '16px',
-                  backgroundColor: '#f5f5f5'
-                }}>
-                  {language.icon}
-                </Avatar>
-                <Typography variant="body2" fontWeight="bold">
-                  {language.name}
-                </Typography>
-              </Box>
-            </Grid>
-          ))}
+          {languages
+            .filter((lang) => !lang.features.execution)
+            .map((language) => (
+              <Grid item xs={12} sm={6} md={3} key={language.name}>
+                <Box display="flex" alignItems="center" gap={1}>
+                  <Avatar
+                    sx={{
+                      width: 32,
+                      height: 32,
+                      fontSize: '16px',
+                      backgroundColor: '#f5f5f5',
+                    }}
+                  >
+                    {language.icon}
+                  </Avatar>
+                  <Typography variant="body2" fontWeight="bold">
+                    {language.name}
+                  </Typography>
+                </Box>
+              </Grid>
+            ))}
         </Grid>
       </Paper>
 
@@ -424,7 +533,7 @@ export default function LanguagesPage() {
           <Grid item xs={12} sm={6} md={3}>
             <Box textAlign="center">
               <Typography variant="h4" color="primary" fontWeight="bold">
-                {languages.filter(lang => lang.features.execution).length}
+                {languages.filter((lang) => lang.features.execution).length}
               </Typography>
               <Typography variant="body2" color="textSecondary">
                 Fully Supported Languages
@@ -446,7 +555,8 @@ export default function LanguagesPage() {
           <Grid item xs={12} sm={6} md={3}>
             <Box textAlign="center">
               <Typography variant="h4" color="warning" fontWeight="bold">
-                {languages.length - languages.filter(lang => lang.features.execution).length}
+                {languages.length -
+                  languages.filter((lang) => lang.features.execution).length}
               </Typography>
               <Typography variant="body2" color="textSecondary">
                 Languages in Development
@@ -468,4 +578,4 @@ export default function LanguagesPage() {
       </Paper>
     </Container>
   );
-} 
+}
