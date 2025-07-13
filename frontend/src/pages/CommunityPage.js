@@ -223,7 +223,7 @@ export default function CommunityPage() {
   const [tabValue, setTabValue] = useState(0);
   const [showNewTopicDialog, setShowNewTopicDialog] = useState(false);
   const [showNewGroupDialog, setShowNewGroupDialog] = useState(false);
-  const { success, info } = useNotification();
+  const { info } = useNotification();
 
   const handleTabChange = (event, newValue) => {
     setTabValue(newValue);

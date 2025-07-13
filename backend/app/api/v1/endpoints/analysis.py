@@ -9,11 +9,13 @@ import asyncio
 import json
 from datetime import datetime, timedelta
 
-from app.services.ai_analyzer import AIAnalyzer
-from app.services.code_analyzer import CodeAnalyzer
-from app.services.complexity_analyzer import ComplexityAnalyzer
-from app.services.optimization_service import OptimizationService
-from app.services.visualization import VisualizationService
+from app.services.mock_analysis_service import (
+    MockCodeAnalyzer as CodeAnalyzer,
+    MockComplexityAnalyzer as ComplexityAnalyzer,
+    MockAIAnalyzer as AIAnalyzer,
+    MockOptimizationService as OptimizationService,
+    MockVisualizationService as VisualizationService
+)
 from app.core.security import get_current_user
 from app.models.user import User
 from app.models.analysis import Analysis
@@ -60,7 +62,7 @@ class AIInsightRequest(BaseModel):
 async def analyze_code(
     request: CodeAnalysisRequest,
     background_tasks: BackgroundTasks,
-    current_user: User = Depends(get_current_user),
+    current_user: Optional[User] = Depends(get_current_user),
     db: Session = Depends(get_db)
 ):
     """
@@ -69,7 +71,7 @@ async def analyze_code(
     try:
         analysis_result = {
             "timestamp": datetime.utcnow().isoformat(),
-            "user_id": current_user.id,
+            "user_id": current_user.id if current_user else None,
             "language": request.language,
             "code_length": len(request.code),
             "analysis": {}
@@ -115,27 +117,29 @@ async def analyze_code(
             )
             analysis_result["analysis"]["visualization"] = viz_data
 
-        # Save analysis to database
-        analysis_record = Analysis(
-            user_id=current_user.id,
-            code=request.code,
-            language=request.language,
-            result=json.dumps(analysis_result),
-            created_at=datetime.utcnow()
-        )
-        db.add(analysis_record)
-        db.commit()
+        # Save analysis to database (only if user is authenticated)
+        analysis_record = None
+        if current_user:
+            analysis_record = Analysis(
+                user_id=current_user.id,
+                code=request.code,
+                language=request.language,
+                result=json.dumps(analysis_result),
+                created_at=datetime.utcnow()
+            )
+            db.add(analysis_record)
+            db.commit()
 
-        # Background task for advanced analytics
-        background_tasks.add_task(
-            perform_advanced_analytics, 
-            current_user.id, 
-            analysis_result
-        )
+            # Background task for advanced analytics
+            background_tasks.add_task(
+                perform_advanced_analytics, 
+                current_user.id, 
+                analysis_result
+            )
 
         return {
             "success": True,
-            "analysis_id": analysis_record.id,
+            "analysis_id": analysis_record.id if analysis_record else None,
             "result": analysis_result
         }
 

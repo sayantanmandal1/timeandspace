@@ -10,7 +10,7 @@ import {
 import { Close } from '@mui/icons-material';
 import { createPortal } from 'react-dom';
 
-const NotificationContext = createContext();
+export const NotificationContext = createContext();
 
 export const useNotification = () => {
   const context = useContext(NotificationContext);

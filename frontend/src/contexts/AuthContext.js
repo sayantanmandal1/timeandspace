@@ -1,6 +1,6 @@
-import React, { createContext, useContext, useState, useEffect } from 'react';
-import { useNotification } from '../components/NotificationToast';
+import React, { createContext, useContext, useState, useEffect, useCallback } from 'react';
 import { mockAuthService } from '../services/mockAuthService';
+import { NotificationContext } from '../components/NotificationToast';
 
 const AuthContext = createContext();
 
@@ -12,11 +12,27 @@ export const useAuth = () => {
   return context;
 };
 
+const useNotificationSafe = () => {
+  const context = useContext(NotificationContext);
+  if (!context) {
+    // Return fallback functions if notification context is not available
+    return {
+      success: (message) => console.log('Success:', message),
+      error: (message) => console.error('Error:', message),
+      info: (message) => console.log('Info:', message),
+      warning: (message) => console.warn('Warning:', message),
+    };
+  }
+  return context;
+};
+
 export const AuthProvider = ({ children }) => {
   const [user, setUser] = useState(null);
   const [loading, setLoading] = useState(true);
   const [isAuthenticated, setIsAuthenticated] = useState(false);
-  const { success, error: showError, info } = useNotification();
+  
+  // Use the safe notification hook
+  const { success, error: showError, info } = useNotificationSafe();
 
   // Check if user is logged in on app start
   useEffect(() => {
@@ -40,7 +56,7 @@ export const AuthProvider = ({ children }) => {
     checkAuthStatus();
   }, []);
 
-  const login = async (email, password) => {
+  const login = useCallback(async (email, password) => {
     try {
       setLoading(true);
       
@@ -61,9 +77,9 @@ export const AuthProvider = ({ children }) => {
     } finally {
       setLoading(false);
     }
-  };
+  }, [success, showError]);
 
-  const register = async (userData) => {
+  const register = useCallback(async (userData) => {
     try {
       setLoading(true);
       
@@ -84,17 +100,17 @@ export const AuthProvider = ({ children }) => {
     } finally {
       setLoading(false);
     }
-  };
+  }, [success, showError]);
 
-  const logout = () => {
+  const logout = useCallback(() => {
     localStorage.removeItem('authToken');
     localStorage.removeItem('userData');
     setUser(null);
     setIsAuthenticated(false);
     info('Logged out successfully');
-  };
+  }, [info]);
 
-  const updateProfile = async (profileData) => {
+  const updateProfile = useCallback(async (profileData) => {
     try {
       setLoading(true);
       
@@ -113,9 +129,9 @@ export const AuthProvider = ({ children }) => {
     } finally {
       setLoading(false);
     }
-  };
+  }, [success, showError]);
 
-  const changePassword = async (currentPassword, newPassword) => {
+  const changePassword = useCallback(async (currentPassword, newPassword) => {
     try {
       setLoading(true);
       
@@ -130,9 +146,9 @@ export const AuthProvider = ({ children }) => {
     } finally {
       setLoading(false);
     }
-  };
+  }, [success, showError]);
 
-  const forgotPassword = async (email) => {
+  const forgotPassword = useCallback(async (email) => {
     try {
       setLoading(true);
       
@@ -146,9 +162,9 @@ export const AuthProvider = ({ children }) => {
     } finally {
       setLoading(false);
     }
-  };
+  }, [success, showError]);
 
-  const resetPassword = async (token, newPassword) => {
+  const resetPassword = useCallback(async (token, newPassword) => {
     try {
       setLoading(true);
       
@@ -162,7 +178,7 @@ export const AuthProvider = ({ children }) => {
     } finally {
       setLoading(false);
     }
-  };
+  }, [success, showError]);
 
   const value = {
     user,

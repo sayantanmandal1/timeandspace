@@ -66,7 +66,7 @@ export default function BatchPage() {
   const [selectedSnippet, setSelectedSnippet] = useState(null);
   const [showDetailDialog, setShowDetailDialog] = useState(false);
   const [error, setError] = useState(null);
-  const { success, error: showError, warning, info } = useNotification();
+  const { success, warning, info } = useNotification();
   const [batchResults, setBatchResults] = useState([]);
 
   const addCodeSnippet = () => {
