@@ -1,4 +1,5 @@
 import React, { useState } from 'react';
+import { useNotification } from '../components/NotificationToast';
 import {
   Box,
   Typography,
@@ -14,7 +15,7 @@ import {
   Chip,
   CircularProgress,
   Alert,
-  Snackbar,
+
   Grid,
   Card,
   CardContent,
@@ -64,12 +65,8 @@ export default function BatchPage() {
   const [loading, setLoading] = useState(false);
   const [selectedSnippet, setSelectedSnippet] = useState(null);
   const [showDetailDialog, setShowDetailDialog] = useState(false);
-  const [snackbar, setSnackbar] = useState({
-    open: false,
-    message: '',
-    severity: 'info',
-  });
   const [error, setError] = useState(null);
+  const { success, error: showError, warning, info } = useNotification();
   const [batchResults, setBatchResults] = useState([]);
 
   const addCodeSnippet = () => {
@@ -99,11 +96,7 @@ export default function BatchPage() {
 
   const handleBatchAnalysis = async () => {
     if (codeSnippets.length === 0) {
-      setSnackbar({
-        open: true,
-        message: 'No code snippets to analyze.',
-        severity: 'warning',
-      });
+      warning('No code snippets to analyze.');
       return;
     }
 
@@ -180,11 +173,7 @@ export default function BatchPage() {
 
     setLoading(false);
     setBatchResults(results);
-    setSnackbar({
-      open: true,
-      message: 'Batch analysis completed!',
-      severity: 'success',
-    });
+    success('Batch analysis completed!');
   };
 
   const handleFileUpload = (event) => {
@@ -211,11 +200,7 @@ export default function BatchPage() {
       reader.readAsText(file);
     });
 
-    setSnackbar({
-      open: true,
-      message: `${files.length} file(s) uploaded successfully!`,
-      severity: 'success',
-    });
+    success(`${files.length} file(s) uploaded successfully!`);
   };
 
   const getLanguageFromExtension = (filename) => {
@@ -257,20 +242,12 @@ export default function BatchPage() {
     a.download = `batch-analysis-${Date.now()}.json`;
     a.click();
     URL.revokeObjectURL(url);
-    setSnackbar({
-      open: true,
-      message: 'Results exported successfully!',
-      severity: 'success',
-    });
+    success('Results exported successfully!');
   };
 
   const clearAll = () => {
     setCodeSnippets([]);
-    setSnackbar({
-      open: true,
-      message: 'All snippets cleared.',
-      severity: 'info',
-    });
+    info('All snippets cleared.');
   };
 
   const getStatusColor = (status) => {
@@ -668,20 +645,7 @@ export default function BatchPage() {
         </DialogActions>
       </Dialog>
 
-      {/* Snackbar for notifications */}
-      <Snackbar
-        open={snackbar.open}
-        autoHideDuration={4000}
-        onClose={() => setSnackbar({ ...snackbar, open: false })}
-      >
-        <Alert
-          onClose={() => setSnackbar({ ...snackbar, open: false })}
-          severity={snackbar.severity}
-          sx={{ width: '100%' }}
-        >
-          {snackbar.message}
-        </Alert>
-      </Snackbar>
+
     </Container>
   );
 }

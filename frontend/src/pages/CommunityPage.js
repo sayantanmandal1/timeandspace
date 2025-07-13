@@ -1,4 +1,5 @@
 import React, { useState } from 'react';
+import { useNotification } from '../components/NotificationToast';
 import {
   Box,
   Typography,
@@ -222,6 +223,7 @@ export default function CommunityPage() {
   const [tabValue, setTabValue] = useState(0);
   const [showNewTopicDialog, setShowNewTopicDialog] = useState(false);
   const [showNewGroupDialog, setShowNewGroupDialog] = useState(false);
+  const { success, info } = useNotification();
 
   const handleTabChange = (event, newValue) => {
     setTabValue(newValue);
@@ -340,7 +342,10 @@ export default function CommunityPage() {
               <Button
                 variant="contained"
                 startIcon={<Forum />} // Changed from Add to Forum
-                onClick={() => setShowNewTopicDialog(true)}
+                onClick={() => {
+                  setShowNewTopicDialog(true);
+                  info('Creating new forum topic...');
+                }}
               >
                 New Topic
               </Button>
@@ -580,7 +585,10 @@ export default function CommunityPage() {
             <Button
               variant="contained"
               startIcon={<Forum />} // Changed from Add to Forum
-              onClick={() => setShowNewGroupDialog(true)}
+              onClick={() => {
+                setShowNewGroupDialog(true);
+                info('Creating new study group...');
+              }}
             >
               Create Group
             </Button>

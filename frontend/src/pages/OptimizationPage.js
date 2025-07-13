@@ -1,4 +1,5 @@
 import React, { useState } from 'react';
+import { useNotification } from '../components/NotificationToast';
 import {
   Container,
   Typography,
@@ -25,7 +26,7 @@ import {
   AccordionSummary,
   AccordionDetails,
   LinearProgress,
-  Snackbar,
+
   InputLabel,
 } from '@mui/material';
 import {
@@ -82,19 +83,11 @@ export default function OptimizationPage() {
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState(null);
   const [languages] = useState(['python', 'java', 'javascript', 'cpp', 'c']);
-  const [snackbar, setSnackbar] = useState({
-    open: false,
-    message: '',
-    severity: 'info',
-  });
+  const { success, error: showError, warning, info } = useNotification();
 
   const handleSuggestOptimizations = async () => {
     if (!code.trim()) {
-      setSnackbar({
-        open: true,
-        message: 'Please enter some code to optimize.',
-        severity: 'warning',
-      });
+      warning('Please enter some code to optimize.');
       return;
     }
 
@@ -112,11 +105,7 @@ export default function OptimizationPage() {
 
       if (response.data.success) {
         setSuggestions(response.data);
-        setSnackbar({
-          open: true,
-          message: 'Optimization suggestions generated!',
-          severity: 'success',
-        });
+        success('Optimization suggestions generated!');
       } else {
         const responseError = response.data.error;
         const errorMessage =
@@ -124,11 +113,7 @@ export default function OptimizationPage() {
             ? responseError
             : JSON.stringify(responseError);
         setError(errorMessage || 'Failed to generate suggestions');
-        setSnackbar({
-          open: true,
-          message: 'Failed to generate suggestions. Please check your code.',
-          severity: 'error',
-        });
+        showError('Failed to generate suggestions. Please check your code.');
       }
     } catch (err) {
       const errorMessage =
@@ -141,11 +126,7 @@ export default function OptimizationPage() {
           ? errorMessage
           : JSON.stringify(errorMessage)
       );
-      setSnackbar({
-        open: true,
-        message: 'Failed to generate suggestions. Please try again.',
-        severity: 'error',
-      });
+      showError('Failed to generate suggestions. Please try again.');
     } finally {
       setLoading(false);
     }
@@ -153,11 +134,7 @@ export default function OptimizationPage() {
 
   const handleApplyOptimizations = async () => {
     if (!code.trim()) {
-      setSnackbar({
-        open: true,
-        message: 'Please enter some code to optimize.',
-        severity: 'warning',
-      });
+      warning('Please enter some code to optimize.');
       return;
     }
 
@@ -174,11 +151,7 @@ export default function OptimizationPage() {
 
       if (response.data.success) {
         setOptimizedCode(response.data);
-        setSnackbar({
-          open: true,
-          message: 'Optimized code generated!',
-          severity: 'success',
-        });
+        success('Optimized code generated!');
       } else {
         const responseError = response.data.error;
         const errorMessage =
@@ -186,11 +159,7 @@ export default function OptimizationPage() {
             ? responseError
             : JSON.stringify(responseError);
         setError(errorMessage || 'Failed to apply optimizations');
-        setSnackbar({
-          open: true,
-          message: 'Failed to apply optimizations. Please check your code.',
-          severity: 'error',
-        });
+        showError('Failed to apply optimizations. Please check your code.');
       }
     } catch (err) {
       const errorMessage =
@@ -203,11 +172,7 @@ export default function OptimizationPage() {
           ? errorMessage
           : JSON.stringify(errorMessage)
       );
-      setSnackbar({
-        open: true,
-        message: 'Failed to apply optimizations. Please try again.',
-        severity: 'error',
-      });
+      showError('Failed to apply optimizations. Please try again.');
     } finally {
       setLoading(false);
     }
@@ -218,7 +183,7 @@ export default function OptimizationPage() {
     setSuggestions(null);
     setOptimizedCode(null);
     setError(null);
-    setSnackbar({ open: true, message: 'Code cleared.', severity: 'info' });
+    info('Code cleared.');
   };
 
   return (
@@ -579,20 +544,7 @@ export default function OptimizationPage() {
         </Grid>
       </Grid>
 
-      {/* Snackbar for notifications */}
-      <Snackbar
-        open={snackbar?.open || false}
-        autoHideDuration={4000}
-        onClose={() => setSnackbar?.({ ...snackbar, open: false })}
-      >
-        <Alert
-          onClose={() => setSnackbar?.({ ...snackbar, open: false })}
-          severity={snackbar?.severity || 'info'}
-          sx={{ width: '100%' }}
-        >
-          {snackbar?.message || 'Optimization notification'}
-        </Alert>
-      </Snackbar>
+
     </Container>
   );
 }

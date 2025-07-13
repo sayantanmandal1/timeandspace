@@ -1,4 +1,5 @@
 import React, { useState } from 'react';
+import { useNotification } from '../components/NotificationToast';
 import {
   Box,
   Button,
@@ -18,7 +19,7 @@ import {
   Chip,
   Divider,
   Alert,
-  Snackbar,
+
   Container,
   FormControl,
   InputLabel,
@@ -100,12 +101,8 @@ export default function AnalyzePage() {
   const [showOnboarding, setShowOnboarding] = useState(true);
   const [activeTab, setActiveTab] = useState(0);
   const [showShareDialog, setShowShareDialog] = useState(false);
-  const [snackbar, setSnackbar] = useState({
-    open: false,
-    message: '',
-    severity: 'info',
-  });
   const [backendStatus, setBackendStatus] = useState('checking');
+  const { success, error: showError, warning, info } = useNotification();
 
   // Check backend status on component mount
   React.useEffect(() => {
@@ -115,12 +112,7 @@ export default function AnalyzePage() {
         setBackendStatus('connected');
       } catch (error) {
         setBackendStatus('disconnected');
-        setSnackbar({
-          open: true,
-          message:
-            'Backend server is not running. Please start the backend server.',
-          severity: 'error',
-        });
+        showError('Backend server is not running. Please start the backend server.');
       }
     };
 
@@ -181,20 +173,12 @@ export default function AnalyzePage() {
     setLanguage(exampleLanguage);
     setShowExamples(false);
     setDetectedAlgorithm(detectAlgorithm(exampleCode));
-    setSnackbar({
-      open: true,
-      message: `${exampleLanguage.charAt(0).toUpperCase() + exampleLanguage.slice(1)} example loaded! Click Analyze to visualize.`,
-      severity: 'success',
-    });
+    success(`${exampleLanguage.charAt(0).toUpperCase() + exampleLanguage.slice(1)} example loaded! Click Analyze to visualize.`);
   };
 
   const handleAnalyze = async () => {
     if (!code.trim()) {
-      setSnackbar({
-        open: true,
-        message: 'Please enter some code to analyze.',
-        severity: 'warning',
-      });
+      warning('Please enter some code to analyze.');
       return;
     }
 
@@ -251,11 +235,7 @@ export default function AnalyzePage() {
           setError(
             'Input required for this code. Please provide the required input below.'
           );
-          setSnackbar({
-            open: true,
-            message: 'Input required! Please fill in the input fields below.',
-            severity: 'info',
-          });
+          info('Input required! Please fill in the input fields below.');
           return;
         }
       }
@@ -270,21 +250,13 @@ export default function AnalyzePage() {
         setError(
           'Input required for this code. Please provide the required input below.'
         );
-        setSnackbar({
-          open: true,
-          message: 'Input required! Please fill in the input fields below.',
-          severity: 'info',
-        });
+        info('Input required! Please fill in the input fields below.');
         return;
       }
 
       if (res.data.success) {
         setResult(res.data);
-        setSnackbar({
-          open: true,
-          message: 'Analysis complete! Explore the results below.',
-          severity: 'success',
-        });
+        success('Analysis complete! Explore the results below.');
       } else {
         // Handle different types of errors
         const responseError = res.data.error;
@@ -299,28 +271,16 @@ export default function AnalyzePage() {
             setError(
               'Input required for this code. Please provide the required input below.'
             );
-            setSnackbar({
-              open: true,
-              message: 'Input required! Please fill in the input fields below.',
-              severity: 'info',
-            });
+            info('Input required! Please fill in the input fields below.');
           } else {
             setError(
               'Input required but no schema provided. Please check your code.'
             );
-            setSnackbar({
-              open: true,
-              message: 'Input detection failed. Please check your code.',
-              severity: 'error',
-            });
+            showError('Input detection failed. Please check your code.');
           }
         } else {
           setError(errorMessage || 'Analysis failed');
-          setSnackbar({
-            open: true,
-            message: 'Analysis failed. Please check your code and try again.',
-            severity: 'error',
-          });
+          showError('Analysis failed. Please check your code and try again.');
         }
       }
     } catch (err) {
@@ -332,11 +292,7 @@ export default function AnalyzePage() {
           ? errorMessage
           : JSON.stringify(errorMessage)
       );
-      setSnackbar({
-        open: true,
-        message: 'Analysis failed. Please check your code and try again.',
-        severity: 'error',
-      });
+      showError('Analysis failed. Please check your code and try again.');
     } finally {
       setLoading(false);
     }
@@ -352,11 +308,7 @@ export default function AnalyzePage() {
 
     const shareUrl = `${window.location.origin}${window.location.pathname}?data=${encodeURIComponent(JSON.stringify(shareData))}`;
     navigator.clipboard.writeText(shareUrl);
-    setSnackbar({
-      open: true,
-      message: 'Share link copied to clipboard!',
-      severity: 'success',
-    });
+    success('Share link copied to clipboard!');
     setShowShareDialog(false);
   };
 
@@ -378,11 +330,7 @@ export default function AnalyzePage() {
     a.download = `code-analysis-${Date.now()}.json`;
     a.click();
     URL.revokeObjectURL(url);
-    setSnackbar({
-      open: true,
-      message: 'Analysis exported successfully!',
-      severity: 'success',
-    });
+    success('Analysis exported successfully!');
   };
 
   const handleClear = () => {
@@ -393,7 +341,7 @@ export default function AnalyzePage() {
     setInputValues({});
     setDetectedAlgorithm(null);
     setActiveTab(0);
-    setSnackbar({ open: true, message: 'Code cleared.', severity: 'info' });
+    info('Code cleared.');
   };
 
   const handleLoadExample = () => {
@@ -401,17 +349,9 @@ export default function AnalyzePage() {
     if (example) {
       setCode(example.code);
       setDetectedAlgorithm(detectAlgorithm(example.code));
-      setSnackbar({
-        open: true,
-        message: `${language.charAt(0).toUpperCase() + language.slice(1)} example loaded! Click Analyze to visualize.`,
-        severity: 'success',
-      });
+      success(`${language.charAt(0).toUpperCase() + language.slice(1)} example loaded! Click Analyze to visualize.`);
     } else {
-      setSnackbar({
-        open: true,
-        message: `No example found for ${language}.`,
-        severity: 'warning',
-      });
+      warning(`No example found for ${language}.`);
     }
   };
 
@@ -1034,20 +974,7 @@ export default function AnalyzePage() {
         </DialogActions>
       </Dialog>
 
-      {/* Snackbar for notifications */}
-      <Snackbar
-        open={snackbar.open}
-        autoHideDuration={4000}
-        onClose={() => setSnackbar({ ...snackbar, open: false })}
-      >
-        <Alert
-          onClose={() => setSnackbar({ ...snackbar, open: false })}
-          severity={snackbar.severity}
-          sx={{ width: '100%' }}
-        >
-          {snackbar.message}
-        </Alert>
-      </Snackbar>
+
     </Container>
   );
 }

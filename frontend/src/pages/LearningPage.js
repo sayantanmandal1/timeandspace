@@ -1,4 +1,5 @@
 import React, { useState } from 'react';
+import { useNotification } from '../components/NotificationToast';
 import {
   Box,
   Typography,
@@ -203,12 +204,14 @@ const challenges = [
 
 export default function LearningPage() {
   const [tabValue, setTabValue] = useState(0);
+  const { success, info } = useNotification();
 
   const handleTabChange = (event, newValue) => {
     setTabValue(newValue);
   };
 
   const handleCourseSelect = (course) => {
+    success(`Starting course: ${course.title}`);
     // Handle course selection
   };
 

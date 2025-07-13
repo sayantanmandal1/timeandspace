@@ -1,4 +1,5 @@
 import React, { useState } from 'react';
+import { useNotification } from '../components/NotificationToast';
 import {
   Box,
   Typography,
@@ -8,7 +9,7 @@ import {
   MenuItem,
   CircularProgress,
   Alert,
-  Snackbar,
+
   Chip,
   Grid,
   Container,
@@ -61,19 +62,11 @@ export default function ExecutePage() {
   const [memoryUsage, setMemoryUsage] = useState(null);
   const [exitCode, setExitCode] = useState(null);
   const [languages] = useState(['python', 'java', 'javascript', 'cpp', 'c']);
-  const [snackbar, setSnackbar] = useState({
-    open: false,
-    message: '',
-    severity: 'info',
-  });
+  const { success, error: showError, warning, info } = useNotification();
 
   const handleExecute = async () => {
     if (!code.trim()) {
-      setSnackbar({
-        open: true,
-        message: 'Please enter some code to execute.',
-        severity: 'warning',
-      });
+      warning('Please enter some code to execute.');
       return;
     }
 
@@ -101,11 +94,7 @@ export default function ExecutePage() {
         setExecutionTime(response.data.execution_time || executionTime);
         setMemoryUsage(response.data.memory_usage || null);
         setExitCode(response.data.exit_code || null);
-        setSnackbar({
-          open: true,
-          message: 'Code executed successfully!',
-          severity: 'success',
-        });
+        success('Code executed successfully!');
       } else {
         const responseError = response.data.error;
         const errorMessage =
@@ -113,19 +102,11 @@ export default function ExecutePage() {
             ? responseError
             : JSON.stringify(responseError);
         setError(errorMessage || 'Execution failed');
-        setSnackbar({
-          open: true,
-          message: 'Code execution failed. Check the error output.',
-          severity: 'error',
-        });
+        showError('Code execution failed. Check the error output.');
       }
     } catch (err) {
       setError(err.response?.data?.error || err.message || 'Execution failed');
-      setSnackbar({
-        open: true,
-        message: 'Execution failed. Please check your code and try again.',
-        severity: 'error',
-      });
+      showError('Execution failed. Please check your code and try again.');
     } finally {
       setLoading(false);
     }
@@ -138,11 +119,7 @@ export default function ExecutePage() {
     setExecutionTime(null);
     setMemoryUsage(null);
     setExitCode(null);
-    setSnackbar({
-      open: true,
-      message: 'Code editor cleared.',
-      severity: 'info',
-    });
+    info('Code editor cleared.');
   };
 
   const handleReset = () => {
@@ -152,11 +129,7 @@ export default function ExecutePage() {
     setExecutionTime(null);
     setMemoryUsage(null);
     setExitCode(null);
-    setSnackbar({
-      open: true,
-      message: 'Reset to default code.',
-      severity: 'info',
-    });
+    info('Reset to default code.');
   };
 
   const handleDownload = () => {
@@ -167,11 +140,7 @@ export default function ExecutePage() {
     a.download = `code.${language}`;
     a.click();
     URL.revokeObjectURL(url);
-    setSnackbar({
-      open: true,
-      message: 'Code downloaded successfully!',
-      severity: 'success',
-    });
+    success('Code downloaded successfully!');
   };
 
   const handleFileUpload = (event) => {
@@ -180,11 +149,7 @@ export default function ExecutePage() {
       const reader = new FileReader();
       reader.onload = (e) => {
         setCode(e.target.result);
-        setSnackbar({
-          open: true,
-          message: 'File uploaded successfully!',
-          severity: 'success',
-        });
+        success('File uploaded successfully!');
       };
       reader.readAsText(file);
     }
@@ -192,11 +157,7 @@ export default function ExecutePage() {
 
   const handleLoadExample = () => {
     setCode(defaultCode);
-    setSnackbar({
-      open: true,
-      message: 'Example code loaded.',
-      severity: 'info',
-    });
+    info('Example code loaded.');
   };
 
   return (
@@ -411,20 +372,7 @@ export default function ExecutePage() {
         </Grid>
       </Grid>
 
-      {/* Snackbar for notifications */}
-      <Snackbar
-        open={snackbar?.open || false}
-        autoHideDuration={4000}
-        onClose={() => setSnackbar?.({ ...snackbar, open: false })}
-      >
-        <Alert
-          onClose={() => setSnackbar?.({ ...snackbar, open: false })}
-          severity={snackbar?.severity || 'info'}
-          sx={{ width: '100%' }}
-        >
-          {snackbar?.message || 'Notification'}
-        </Alert>
-      </Snackbar>
+
     </Container>
   );
 }
