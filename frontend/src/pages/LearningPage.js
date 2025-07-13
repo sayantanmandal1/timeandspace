@@ -2,50 +2,34 @@ import React, { useState } from 'react';
 import {
   Box,
   Typography,
+  Paper,
   Grid,
+  Button,
+  Chip,
+  Avatar,
+  Tabs,
+  Tab,
+  Container,
+  Stack,
   Card,
   CardContent,
   CardActions,
-  Button,
-  Chip,
-  LinearProgress,
-  Avatar,
-  Rating,
-  Tabs,
-  Tab,
-  Paper,
   List,
   ListItem,
-  ListItemText,
   ListItemIcon,
-  Divider,
-  Badge,
-  IconButton,
-  Tooltip,
-  Container,
-  Stack,
+  ListItemText,
+  LinearProgress,
 } from '@mui/material';
 import {
   School,
-  PlayArrow,
-  CheckCircle,
-  Lock,
-  Star,
-  TrendingUp,
-  EmojiEvents,
   Psychology,
   Code,
-  Speed,
+  EmojiEvents,
+  Star,
+  CheckCircle,
   Timeline,
-  Book,
-  VideoLibrary,
-  Assignment,
-  Quiz,
-  Group,
   AutoAwesome,
-  RocketLaunch,
-  Lightbulb,
-  WorkspacePremium,
+  Refresh,
 } from '@mui/icons-material';
 
 const courses = [
@@ -181,7 +165,7 @@ const achievements = [
   {
     title: 'Speed Demon',
     description: 'Complete 10 problems in under 30 minutes',
-    icon: <Speed />,
+    icon: <Refresh />,
     progress: 3,
     maxProgress: 10,
     color: 'warning',
@@ -219,14 +203,13 @@ const challenges = [
 
 export default function LearningPage() {
   const [tabValue, setTabValue] = useState(0);
-  const [selectedCourse, setSelectedCourse] = useState(null);
 
   const handleTabChange = (event, newValue) => {
     setTabValue(newValue);
   };
 
   const handleCourseSelect = (course) => {
-    setSelectedCourse(course);
+    // Handle course selection
   };
 
   return (
@@ -250,13 +233,14 @@ export default function LearningPage() {
               Your Learning Progress
             </Typography>
             <Box sx={{ display: 'flex', alignItems: 'center', gap: 2, mb: 2 }}>
-              <LinearProgress
-                variant="determinate"
-                value={35}
-                sx={{ flexGrow: 1, height: 8, borderRadius: 4 }}
+              <Chip
+                label="35% complete"
+                color="success"
+                size="small"
+                sx={{ fontWeight: 600 }}
               />
               <Typography variant="body2" fontWeight={600}>
-                35%
+                7 of 20 courses completed • 1,240 XP earned
               </Typography>
             </Box>
             <Typography variant="body2" color="text.secondary">
@@ -279,7 +263,7 @@ export default function LearningPage() {
       {/* Tabs */}
       <Box sx={{ borderBottom: 1, borderColor: 'divider', mb: 3 }}>
         <Tabs value={tabValue} onChange={handleTabChange}>
-          <Tab label="Courses" icon={<Book />} iconPosition="start" />
+          <Tab label="Courses" icon={<School />} iconPosition="start" />
           <Tab
             label="Learning Paths"
             icon={<Timeline />}
@@ -321,11 +305,12 @@ export default function LearningPage() {
                       sx={{ fontWeight: 600 }}
                     />
                     {course.isPremium && (
-                      <Tooltip title="Premium Course">
-                        <WorkspacePremium
-                          sx={{ color: 'warning.main', fontSize: 20 }}
-                        />
-                      </Tooltip>
+                      <Chip
+                        label="Premium"
+                        color="warning"
+                        size="small"
+                        sx={{ ml: 1 }}
+                      />
                     )}
                   </Box>
 
@@ -381,10 +366,11 @@ export default function LearningPage() {
                     }}
                   >
                     <Box sx={{ display: 'flex', alignItems: 'center' }}>
-                      <Rating value={course.rating} readOnly size="small" />
-                      <Typography variant="caption" sx={{ ml: 0.5 }}>
-                        ({course.rating})
-                      </Typography>
+                      <Chip
+                        label={`${course.rating} (1500)`}
+                        size="small"
+                        icon={<Star />}
+                      />
                     </Box>
                     <Typography variant="caption" color="text.secondary">
                       {course.students.toLocaleString()} students
@@ -412,7 +398,7 @@ export default function LearningPage() {
                     <Button
                       variant="outlined"
                       fullWidth
-                      startIcon={<WorkspacePremium />}
+                      startIcon={<Star />}
                       color="warning"
                     >
                       Upgrade to Access
@@ -421,7 +407,7 @@ export default function LearningPage() {
                     <Button
                       variant="contained"
                       fullWidth
-                      startIcon={<PlayArrow />}
+                      startIcon={<School />}
                       onClick={() => handleCourseSelect(course)}
                     >
                       Start Learning
@@ -513,11 +499,7 @@ export default function LearningPage() {
                   </Typography>
                 </Box>
 
-                <Button
-                  variant="contained"
-                  fullWidth
-                  startIcon={<RocketLaunch />}
-                >
+                <Button variant="contained" fullWidth startIcon={<Timeline />}>
                   Start Path
                 </Button>
               </Paper>
@@ -697,7 +679,7 @@ export default function LearningPage() {
               </Button>
               <Button
                 variant="outlined"
-                startIcon={<Lightbulb />}
+                startIcon={<AutoAwesome />}
                 sx={{
                   borderColor: 'white',
                   color: 'white',

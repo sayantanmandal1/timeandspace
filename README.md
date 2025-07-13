@@ -1,10 +1,6 @@
 # 🚀 DSA Visualizer Pro - The Ultimate AI-Powered Learning Platform
 
-<<<<<<< HEAD
 > **The most advanced Data Structures & Algorithms learning platform in existence**
-=======
-A comprehensive platform for analyzing Data Structures and Algorithms code with real-time visualizations, complexity analysis, and AI-powered insights.
->>>>>>> 736e328d80054cb81cc7138bda4fc1f052d78d98
 
 [![Python](https://img.shields.io/badge/Python-3.8+-blue.svg)](https://python.org)
 [![React](https://img.shields.io/badge/React-18.0+-blue.svg)](https://reactjs.org)

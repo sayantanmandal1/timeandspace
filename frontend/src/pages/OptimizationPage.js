@@ -131,7 +131,6 @@ export default function OptimizationPage() {
         });
       }
     } catch (err) {
-      console.error('Optimization error:', err);
       const errorMessage =
         err.response?.data?.error ||
         err.message ||
@@ -194,7 +193,6 @@ export default function OptimizationPage() {
         });
       }
     } catch (err) {
-      console.error('Optimization error:', err);
       const errorMessage =
         err.response?.data?.error ||
         err.message ||

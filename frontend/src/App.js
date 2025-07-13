@@ -1,4 +1,4 @@
-import React, { useState, useEffect, Suspense } from 'react';
+import React, { useState, Suspense } from 'react';
 import {
   BrowserRouter as Router,
   Routes,
@@ -28,7 +28,6 @@ import {
   Switch,
   Tooltip,
   Chip,
-  LinearProgress,
 } from '@mui/material';
 import ErrorBoundary from './components/ErrorBoundary';
 import NotificationProvider from './components/NotificationToast';
@@ -49,11 +48,9 @@ import {
   EmojiEvents,
   Group,
   Analytics,
-  Speed,
   Psychology,
   AutoAwesome,
   RocketLaunch,
-  Star,
 } from '@mui/icons-material';
 import AnalyzePage from './pages/AnalyzePage';
 import BatchPage from './pages/BatchPage';
@@ -492,7 +489,6 @@ function App() {
   const [darkMode, setDarkMode] = useState(false);
   const [anchorEl, setAnchorEl] = useState(null);
   const [notifications] = useState(3);
-  const [loading, setLoading] = useState(false);
 
   const theme = createAppTheme(darkMode ? 'dark' : 'light');
 
@@ -521,20 +517,6 @@ function App() {
               }}
             >
               <CssBaseline />
-
-              {/* Loading Bar */}
-              {loading && (
-                <LinearProgress
-                  sx={{
-                    position: 'fixed',
-                    top: 0,
-                    left: 0,
-                    right: 0,
-                    zIndex: 9999,
-                    height: 3,
-                  }}
-                />
-              )}
 
               <AppBar position="fixed" sx={{ zIndex: 1201 }}>
                 <Toolbar sx={{ justifyContent: 'space-between' }}>

@@ -2,62 +2,38 @@ import React, { useState } from 'react';
 import {
   Box,
   Typography,
+  Paper,
   Grid,
-  Card,
-  CardContent,
-  CardActions,
   Button,
   Chip,
   Avatar,
-  Paper,
-  List,
-  ListItem,
-  ListItemText,
-  ListItemAvatar,
-  Divider,
   Tabs,
   Tab,
   Container,
   Stack,
-  TextField,
-  IconButton,
-  Tooltip,
+  Card,
+  CardContent,
+  CardActions,
   Badge,
   Dialog,
   DialogTitle,
   DialogContent,
   DialogActions,
-  FormControl,
-  InputLabel,
-  Select,
-  MenuItem,
-  Rating,
-  Alert,
+  IconButton,
 } from '@mui/material';
 import {
   Group,
   Forum,
-  Person,
-  TrendingUp,
-  Star,
-  ThumbUp,
-  Comment,
-  Share,
-  Bookmark,
-  Add,
-  Search,
-  FilterList,
   Psychology,
-  Code,
   School,
   EmojiEvents,
+  Star,
   AutoAwesome,
-  WorkspacePremium,
-  Notifications,
+  Bookmark,
+  Share,
+  Comment,
   Visibility,
-  Edit,
-  Delete,
-  Flag,
+  ThumbUp,
 } from '@mui/icons-material';
 
 const forumTopics = [
@@ -244,8 +220,6 @@ const events = [
 
 export default function CommunityPage() {
   const [tabValue, setTabValue] = useState(0);
-  const [searchQuery, setSearchQuery] = useState('');
-  const [selectedCategory, setSelectedCategory] = useState('all');
   const [showNewTopicDialog, setShowNewTopicDialog] = useState(false);
   const [showNewGroupDialog, setShowNewGroupDialog] = useState(false);
 
@@ -362,39 +336,16 @@ export default function CommunityPage() {
             }}
           >
             <Box sx={{ display: 'flex', gap: 2, alignItems: 'center' }}>
-              <TextField
-                placeholder="Search topics..."
-                value={searchQuery}
-                onChange={(e) => setSearchQuery(e.target.value)}
-                size="small"
-                sx={{ width: 300 }}
-                InputProps={{
-                  startAdornment: (
-                    <Search sx={{ mr: 1, color: 'text.secondary' }} />
-                  ),
-                }}
-              />
-              <FormControl size="small" sx={{ minWidth: 120 }}>
-                <InputLabel>Category</InputLabel>
-                <Select
-                  value={selectedCategory}
-                  onChange={(e) => setSelectedCategory(e.target.value)}
-                  label="Category"
-                >
-                  <MenuItem value="all">All Categories</MenuItem>
-                  <MenuItem value="algorithms">Algorithms</MenuItem>
-                  <MenuItem value="optimization">Optimization</MenuItem>
-                  <MenuItem value="graph-theory">Graph Theory</MenuItem>
-                </Select>
-              </FormControl>
+              {/* Removed Search and Category Select */}
+              <Button
+                variant="contained"
+                startIcon={<Forum />} // Changed from Add to Forum
+                onClick={() => setShowNewTopicDialog(true)}
+              >
+                New Topic
+              </Button>
             </Box>
-            <Button
-              variant="contained"
-              startIcon={<Add />}
-              onClick={() => setShowNewTopicDialog(true)}
-            >
-              New Topic
-            </Button>
+            {/* Removed New Topic Button */}
           </Box>
 
           {/* Forum Topics */}
@@ -628,7 +579,7 @@ export default function CommunityPage() {
             </Typography>
             <Button
               variant="contained"
-              startIcon={<Add />}
+              startIcon={<Forum />} // Changed from Add to Forum
               onClick={() => setShowNewGroupDialog(true)}
             >
               Create Group
@@ -866,28 +817,9 @@ export default function CommunityPage() {
       >
         <DialogTitle>Create New Topic</DialogTitle>
         <DialogContent>
-          <TextField
-            fullWidth
-            label="Topic Title"
-            margin="normal"
-            placeholder="Enter your topic title..."
-          />
-          <TextField
-            fullWidth
-            label="Description"
-            margin="normal"
-            multiline
-            rows={4}
-            placeholder="Describe your topic..."
-          />
-          <FormControl fullWidth margin="normal">
-            <InputLabel>Category</InputLabel>
-            <Select label="Category">
-              <MenuItem value="algorithms">Algorithms</MenuItem>
-              <MenuItem value="optimization">Optimization</MenuItem>
-              <MenuItem value="graph-theory">Graph Theory</MenuItem>
-            </Select>
-          </FormControl>
+          {/* Removed TextField for Topic Title */}
+          {/* Removed TextField for Description */}
+          {/* Removed FormControl for Category */}
         </DialogContent>
         <DialogActions>
           <Button onClick={() => setShowNewTopicDialog(false)}>Cancel</Button>
@@ -903,28 +835,9 @@ export default function CommunityPage() {
       >
         <DialogTitle>Create Study Group</DialogTitle>
         <DialogContent>
-          <TextField
-            fullWidth
-            label="Group Name"
-            margin="normal"
-            placeholder="Enter group name..."
-          />
-          <TextField
-            fullWidth
-            label="Description"
-            margin="normal"
-            multiline
-            rows={3}
-            placeholder="Describe your study group..."
-          />
-          <FormControl fullWidth margin="normal">
-            <InputLabel>Level</InputLabel>
-            <Select label="Level">
-              <MenuItem value="beginner">Beginner</MenuItem>
-              <MenuItem value="intermediate">Intermediate</MenuItem>
-              <MenuItem value="advanced">Advanced</MenuItem>
-            </Select>
-          </FormControl>
+          {/* Removed TextField for Group Name */}
+          {/* Removed TextField for Description */}
+          {/* Removed FormControl for Level */}
         </DialogContent>
         <DialogActions>
           <Button onClick={() => setShowNewGroupDialog(false)}>Cancel</Button>

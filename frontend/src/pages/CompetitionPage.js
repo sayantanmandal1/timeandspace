@@ -1,57 +1,41 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState } from 'react';
 import {
   Box,
   Typography,
+  Paper,
   Grid,
-  Card,
-  CardContent,
-  CardActions,
   Button,
   Chip,
   Avatar,
-  Paper,
-  List,
-  ListItem,
-  ListItemText,
-  ListItemAvatar,
-  Divider,
   Tabs,
   Tab,
   Container,
   Stack,
-  LinearProgress,
-  IconButton,
-  Tooltip,
-  Badge,
+  Card,
+  CardContent,
+  CardActions,
   Table,
   TableBody,
   TableCell,
   TableContainer,
   TableHead,
   TableRow,
+  LinearProgress,
   Alert,
-  Countdown,
 } from '@mui/material';
 import {
   EmojiEvents,
-  Timer,
   TrendingUp,
-  Group,
+  Psychology,
+  Code,
   Star,
-  PlayArrow,
   CheckCircle,
   Error,
-  Schedule,
-  Leaderboard,
   Assignment,
-  Code,
-  Speed,
-  Psychology,
+  PlayArrow,
+  Leaderboard,
+  Schedule,
   AutoAwesome,
-  WorkspacePremium,
-  Notifications,
-  Share,
-  Visibility,
 } from '@mui/icons-material';
 
 const contests = [
@@ -214,7 +198,7 @@ const achievements = [
   {
     title: 'Speed Demon',
     description: 'Solve 5 problems in under 30 minutes',
-    icon: <Speed />,
+    icon: <TrendingUp />,
     achieved: true,
     date: '2024-01-08',
     color: 'warning',
@@ -241,14 +225,6 @@ const achievements = [
 
 export default function CompetitionPage() {
   const [tabValue, setTabValue] = useState(0);
-  const [currentTime, setCurrentTime] = useState(new Date());
-
-  useEffect(() => {
-    const timer = setInterval(() => {
-      setCurrentTime(new Date());
-    }, 1000);
-    return () => clearInterval(timer);
-  }, []);
 
   const handleTabChange = (event, newValue) => {
     setTabValue(newValue);
@@ -256,7 +232,7 @@ export default function CompetitionPage() {
 
   const getTimeUntil = (targetTime) => {
     const target = new Date(targetTime);
-    const diff = target - currentTime;
+    const diff = target - new Date();
 
     if (diff <= 0) return 'Started';
 

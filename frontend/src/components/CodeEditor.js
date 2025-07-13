@@ -27,7 +27,6 @@ const loadMode = async (modeName) => {
   try {
     // Validate mode name
     if (!modeName || typeof modeName !== 'string') {
-      console.warn('Invalid mode name:', modeName);
       await import('ace-builds/src-noconflict/mode-text');
       return;
     }
@@ -103,16 +102,14 @@ const loadMode = async (modeName) => {
         await import('ace-builds/src-noconflict/mode-text');
         break;
       default:
-        console.warn(`Unknown mode: ${modeName}, falling back to text mode`);
         await import('ace-builds/src-noconflict/mode-text');
     }
   } catch (error) {
-    console.warn(`Failed to load mode: ${modeName}`, error);
     // Fallback to text mode
     try {
       await import('ace-builds/src-noconflict/mode-text');
     } catch (fallbackError) {
-      console.error('Failed to load fallback text mode:', fallbackError);
+      // console.error('Failed to load fallback text mode:', fallbackError);
     }
   }
 };
@@ -214,7 +211,7 @@ export default function CodeEditor({
         await loadMode(modeName);
         setModeLoaded(true);
       } catch (error) {
-        console.error('Failed to load initial language mode:', error);
+        // console.error('Failed to load initial language mode:', error);
         setModeLoaded(true); // Still set to true to show fallback
       }
     };
@@ -231,7 +228,7 @@ export default function CodeEditor({
         await loadMode(modeName);
         setModeLoaded(true);
       } catch (error) {
-        console.error('Failed to load language mode:', error);
+        // console.error('Failed to load language mode:', error);
         setModeLoaded(true); // Still set to true to show fallback
       }
     };
@@ -255,7 +252,7 @@ export default function CodeEditor({
         onChange(languageExamples[newLanguage] || '');
       }
     } else {
-      console.warn('Invalid language selected:', newLanguage);
+      // console.warn('Invalid language selected:', newLanguage);
     }
   };
 
@@ -274,7 +271,7 @@ export default function CodeEditor({
     try {
       return languageModes[language] || 'text';
     } catch (error) {
-      console.warn(`Failed to load mode for language: ${language}`, error);
+      // console.warn(`Failed to load mode for language: ${language}`, error);
       return 'text';
     }
   };
@@ -389,7 +386,7 @@ export default function CodeEditor({
               setEditorError(false);
             }}
             onError={(error) => {
-              console.error('Ace Editor error:', error);
+              // console.error('Ace Editor error:', error);
               setEditorError(true);
             }}
           />

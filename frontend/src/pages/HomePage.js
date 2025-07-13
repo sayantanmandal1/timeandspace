@@ -1,45 +1,34 @@
 import React, { useState, useEffect } from 'react';
+import { useNavigate } from 'react-router-dom';
 import {
   Box,
   Typography,
-  Button,
-  Grid,
   Paper,
+  Grid,
+  Button,
+  Chip,
+  Avatar,
+  Container,
+  Stack,
   Card,
   CardContent,
   CardActions,
-  Chip,
-  Avatar,
   Rating,
-  LinearProgress,
-  IconButton,
-  Tooltip,
-  Container,
-  Stack,
-  Divider,
 } from '@mui/material';
-import { Link, useNavigate } from 'react-router-dom';
 import {
-  Code,
-  Speed,
+  TrendingUp,
   Psychology,
   School,
   EmojiEvents,
+  Star,
+  CheckCircle,
+  AutoAwesome,
   Group,
   Analytics,
-  AutoAwesome,
-  RocketLaunch,
-  Star,
-  TrendingUp,
-  Security,
   Cloud,
-  Support,
   PlayArrow,
+  RocketLaunch,
   ArrowForward,
-  CheckCircle,
-  Timeline,
-  Lightbulb,
-  WorkspacePremium,
 } from '@mui/icons-material';
 
 const features = [
@@ -49,13 +38,6 @@ const features = [
     description:
       'Advanced machine learning algorithms provide intelligent code insights and optimization suggestions',
     color: 'primary',
-  },
-  {
-    icon: <Speed sx={{ fontSize: 40, color: 'success.main' }} />,
-    title: 'Real-time Execution',
-    description:
-      'Execute code instantly with step-by-step visualization and performance metrics',
-    color: 'success',
   },
   {
     icon: <School sx={{ fontSize: 40, color: 'warning.main' }} />,
@@ -564,7 +546,7 @@ export default function HomePage() {
             <Button
               variant="outlined"
               size="large"
-              startIcon={<WorkspacePremium />}
+              startIcon={<Star />}
               sx={{
                 borderColor: 'white',
                 color: 'white',

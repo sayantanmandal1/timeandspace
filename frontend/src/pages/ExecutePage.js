@@ -85,7 +85,7 @@ export default function ExecutePage() {
     setExitCode(null);
 
     try {
-      const startTime = Date.now();
+      const startTime = performance.now();
       const response = await executeCode({
         code,
         language,
@@ -93,8 +93,8 @@ export default function ExecutePage() {
         timeout: 30,
       });
 
-      const endTime = Date.now();
-      const actualExecutionTime = (endTime - startTime) / 1000;
+      const endTime = performance.now();
+      const executionTime = ((endTime - startTime) / 1000).toFixed(2);
 
       if (response.data.success) {
         setOutput(response.data.output || '');
@@ -120,7 +120,6 @@ export default function ExecutePage() {
         });
       }
     } catch (err) {
-      console.error('Execution error:', err);
       setError(err.response?.data?.error || err.message || 'Execution failed');
       setSnackbar({
         open: true,

@@ -56,7 +56,6 @@ export default function HealthPage() {
       setHealthStatus(response.data);
       setLastChecked(new Date());
     } catch (err) {
-      console.error('Health check failed:', err);
       setError(err.message || 'Failed to check backend health');
       setHealthStatus(null);
     } finally {

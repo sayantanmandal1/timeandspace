@@ -114,7 +114,6 @@ export default function AnalyzePage() {
         await health();
         setBackendStatus('connected');
       } catch (error) {
-        console.error('Backend connection failed:', error);
         setBackendStatus('disconnected');
         setSnackbar({
           open: true,
@@ -279,8 +278,6 @@ export default function AnalyzePage() {
         return;
       }
 
-      console.log('Backend response:', res.data); // Debug log
-
       if (res.data.success) {
         setResult(res.data);
         setSnackbar({
@@ -327,7 +324,6 @@ export default function AnalyzePage() {
         }
       }
     } catch (err) {
-      console.error('Analysis error:', err); // Debug log
       const errorMessage =
         err.response?.data?.error || err.message || 'Analysis failed';
       // Ensure error is a string

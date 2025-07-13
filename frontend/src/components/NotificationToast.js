@@ -7,7 +7,7 @@ import {
   Typography,
   IconButton,
 } from '@mui/material';
-import { Close, CheckCircle, Error, Warning, Info } from '@mui/icons-material';
+import { Close } from '@mui/icons-material';
 import { createPortal } from 'react-dom';
 
 const NotificationContext = createContext();
@@ -25,35 +25,38 @@ export const useNotification = () => {
 const NotificationProvider = ({ children }) => {
   const [notifications, setNotifications] = useState([]);
 
-  const addNotification = useCallback((notification) => {
-    const id = Date.now() + Math.random();
-    const newNotification = {
-      id,
-      severity: 'info',
-      title: '',
-      message: '',
-      duration: 6000,
-      action: null,
-      ...notification,
-    };
-
-    setNotifications((prev) => [...prev, newNotification]);
-
-    // Auto remove after duration
-    if (newNotification.duration > 0) {
-      setTimeout(() => {
-        removeNotification(id);
-      }, newNotification.duration);
-    }
-
-    return id;
-  }, []);
-
   const removeNotification = useCallback((id) => {
     setNotifications((prev) =>
       prev.filter((notification) => notification.id !== id)
     );
   }, []);
+
+  const addNotification = useCallback(
+    (notification) => {
+      const id = Date.now() + Math.random();
+      const newNotification = {
+        id,
+        severity: 'info',
+        title: '',
+        message: '',
+        duration: 6000,
+        action: null,
+        ...notification,
+      };
+
+      setNotifications((prev) => [...prev, newNotification]);
+
+      // Auto remove after duration
+      if (newNotification.duration > 0) {
+        setTimeout(() => {
+          removeNotification(id);
+        }, newNotification.duration);
+      }
+
+      return id;
+    },
+    [removeNotification]
+  );
 
   const clearAll = useCallback(() => {
     setNotifications([]);
@@ -119,21 +122,6 @@ const NotificationProvider = ({ children }) => {
 
 const NotificationContainer = () => {
   const { notifications, removeNotification } = useNotification();
-
-  const getSeverityIcon = (severity) => {
-    switch (severity) {
-      case 'success':
-        return <CheckCircle />;
-      case 'error':
-        return <Error />;
-      case 'warning':
-        return <Warning />;
-      case 'info':
-        return <Info />;
-      default:
-        return <Info />;
-    }
-  };
 
   const getSeverityColor = (severity) => {
     switch (severity) {
@@ -212,25 +200,6 @@ export const Toast = ({
   duration = 6000,
   position = 'bottom-right',
 }) => {
-  const getPosition = () => {
-    switch (position) {
-      case 'top-left':
-        return { top: 20, left: 20 };
-      case 'top-right':
-        return { top: 20, right: 20 };
-      case 'bottom-left':
-        return { bottom: 20, left: 20 };
-      case 'bottom-right':
-        return { bottom: 20, right: 20 };
-      case 'top-center':
-        return { top: 20, left: '50%', transform: 'translateX(-50%)' };
-      case 'bottom-center':
-        return { bottom: 20, left: '50%', transform: 'translateX(-50%)' };
-      default:
-        return { bottom: 20, right: 20 };
-    }
-  };
-
   return (
     <Snackbar
       open={open}
