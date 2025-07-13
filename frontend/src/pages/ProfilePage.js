@@ -8,7 +8,6 @@ import {
   Button,
   Grid,
   Card,
-  CardContent,
   Chip,
   Divider,
   Tabs,
@@ -23,38 +22,28 @@ import {
   ListItem,
   ListItemIcon,
   ListItemText,
-  LinearProgress,
-  Badge,
   Switch,
-  FormControlLabel,
 } from '@mui/material';
 import {
   Edit,
   Save,
-  Cancel,
   School,
   EmojiEvents,
-  TrendingUp,
   Code,
-  Psychology,
   Settings,
   Security,
-  Notifications,
   Visibility,
   VisibilityOff,
   Star,
   CheckCircle,
   Timeline,
-  Assessment,
-  Group,
-  AutoAwesome,
 } from '@mui/icons-material';
 import { useAuth } from '../contexts/AuthContext';
 import { useNotification } from '../components/NotificationToast';
 
 export default function ProfilePage() {
   const { user, updateProfile, changePassword, loading } = useAuth();
-  const { success, error: showError } = useNotification();
+  const { error: showError } = useNotification();
   
   const [activeTab, setActiveTab] = useState(0);
   const [isEditing, setIsEditing] = useState(false);
@@ -84,8 +73,6 @@ export default function ProfilePage() {
     darkMode: true,
     publicProfile: true,
   });
-
-  const [errors, setErrors] = useState({});
 
   const experienceLevels = [
     { value: 'beginner', label: 'Beginner (0-1 years)' },
@@ -212,7 +199,7 @@ export default function ProfilePage() {
       {/* Header */}
       <Paper elevation={3} sx={{ p: 4, mb: 4, borderRadius: 3 }}>
         <Box sx={{ display: 'flex', alignItems: 'center', gap: 3, mb: 3 }}>
-          <Badge
+          <Chip
             overlap="circular"
             anchorOrigin={{ vertical: 'bottom', horizontal: 'right' }}
             badgeContent={
@@ -226,7 +213,7 @@ export default function ProfilePage() {
             >
               {user?.firstName?.charAt(0)}{user?.lastName?.charAt(0)}
             </Avatar>
-          </Badge>
+          </Chip>
           
           <Box sx={{ flexGrow: 1 }}>
             <Typography variant="h4" fontWeight={700} gutterBottom>

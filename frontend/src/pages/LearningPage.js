@@ -204,7 +204,7 @@ const challenges = [
 
 export default function LearningPage() {
   const [tabValue, setTabValue] = useState(0);
-  const { success, info } = useNotification();
+  const { success } = useNotification();
 
   const handleTabChange = (event, newValue) => {
     setTabValue(newValue);

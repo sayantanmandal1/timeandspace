@@ -140,6 +140,9 @@ export default function RegisterPage() {
           newErrors.acceptTerms = 'You must accept the terms and conditions';
         }
         break;
+      default:
+        // No validation for other steps
+        break;
     }
     
     setErrors(newErrors);
