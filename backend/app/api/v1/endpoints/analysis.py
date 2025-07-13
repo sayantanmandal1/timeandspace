@@ -3,12 +3,12 @@ Analysis endpoints for code analysis and insights
 """
 
 from fastapi import APIRouter, HTTPException, Depends, BackgroundTasks
+from fastapi.security import HTTPAuthorizationCredentials
 from typing import List, Optional, Dict, Any
 from pydantic import BaseModel
 import asyncio
 import json
 from datetime import datetime, timedelta
-from fastapi.security import HTTPAuthorizationCredentials
 
 from app.services.mock_analysis_service import (
     MockCodeAnalyzer as CodeAnalyzer,
@@ -92,7 +92,6 @@ class AIInsightRequest(BaseModel):
 async def analyze_code(
     request: CodeAnalysisRequest,
     background_tasks: BackgroundTasks,
-    current_user: Optional[User] = Depends(get_optional_user),
     db: Session = Depends(get_db)
 ):
     """
@@ -101,7 +100,7 @@ async def analyze_code(
     try:
         analysis_result = {
             "timestamp": datetime.utcnow().isoformat(),
-            "user_id": current_user.id if current_user else None,
+            "user_id": None,  # No user for now
             "language": request.language,
             "code_length": len(request.code),
             "analysis": {}
@@ -147,29 +146,9 @@ async def analyze_code(
             )
             analysis_result["analysis"]["visualization"] = viz_data
 
-        # Save analysis to database (only if user is authenticated)
-        analysis_record = None
-        if current_user:
-            analysis_record = Analysis(
-                user_id=current_user.id,
-                code=request.code,
-                language=request.language,
-                result=json.dumps(analysis_result),
-                created_at=datetime.utcnow()
-            )
-            db.add(analysis_record)
-            db.commit()
-
-            # Background task for advanced analytics
-            background_tasks.add_task(
-                perform_advanced_analytics, 
-                current_user.id, 
-                analysis_result
-            )
-
         return {
             "success": True,
-            "analysis_id": analysis_record.id if analysis_record else None,
+            "analysis_id": None,  # No analysis record for unauthenticated users
             "result": analysis_result
         }
 
