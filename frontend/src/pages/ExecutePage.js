@@ -98,7 +98,7 @@ export default function ExecutePage() {
 
       if (response.data.success) {
         setOutput(response.data.output || '');
-        setExecutionTime(response.data.execution_time || null);
+        setExecutionTime(response.data.execution_time || executionTime);
         setMemoryUsage(response.data.memory_usage || null);
         setExitCode(response.data.exit_code || null);
         setSnackbar({

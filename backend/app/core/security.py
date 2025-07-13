@@ -10,11 +10,16 @@ import base64
 from datetime import datetime, timedelta
 from typing import Optional, Dict, Any
 
+from fastapi import HTTPException, Depends, status
+from fastapi.security import HTTPBearer, HTTPAuthorizationCredentials
+
 from .config import settings
 from .logging import get_logger
 
 logger = get_logger(__name__)
 
+# Security scheme
+security = HTTPBearer()
 
 def init_security() -> None:
     """Initialize security components"""
@@ -24,6 +29,44 @@ def init_security() -> None:
 def get_security():
     """Get security utilities"""
     return SecurityUtils()
+
+
+def get_current_user(credentials: HTTPAuthorizationCredentials = Depends(security)) -> Dict[str, Any]:
+    """Get current user from JWT token"""
+    security_utils = get_security()
+    payload = security_utils.verify_token(credentials.credentials)
+    
+    if payload is None:
+        raise HTTPException(
+            status_code=status.HTTP_401_UNAUTHORIZED,
+            detail="Could not validate credentials",
+            headers={"WWW-Authenticate": "Bearer"},
+        )
+    
+    user_id = payload.get("sub")
+    if user_id is None:
+        raise HTTPException(
+            status_code=status.HTTP_401_UNAUTHORIZED,
+            detail="Could not validate credentials",
+            headers={"WWW-Authenticate": "Bearer"},
+        )
+    
+    return {
+        "user_id": user_id,
+        "email": payload.get("email"),
+        "username": payload.get("username"),
+        "permissions": payload.get("permissions", [])
+    }
+
+
+def get_current_active_user(current_user: Dict[str, Any] = Depends(get_current_user)) -> Dict[str, Any]:
+    """Get current active user"""
+    if not current_user:
+        raise HTTPException(
+            status_code=status.HTTP_401_UNAUTHORIZED,
+            detail="Inactive user"
+        )
+    return current_user
 
 
 class SecurityUtils:

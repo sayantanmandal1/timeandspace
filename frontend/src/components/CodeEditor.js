@@ -221,19 +221,11 @@ export default function CodeEditor({
 
   // Load mode when language changes
   useEffect(() => {
-    const loadLanguageMode = async () => {
-      setModeLoaded(false);
-      try {
-        const modeName = languageModes[selectedLanguage] || 'text';
-        await loadMode(modeName);
-        setModeLoaded(true);
-      } catch (error) {
-        // console.error('Failed to load language mode:', error);
-        setModeLoaded(true); // Still set to true to show fallback
-      }
-    };
-
-    loadLanguageMode();
+    setModeLoaded(false);
+    const modeName = languageModes[selectedLanguage] || 'text';
+    loadMode(modeName)
+      .then(() => setModeLoaded(true))
+      .catch(() => setModeLoaded(true));
   }, [selectedLanguage]);
 
   const handleLanguageChange = (event) => {
