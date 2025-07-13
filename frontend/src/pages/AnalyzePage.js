@@ -56,7 +56,7 @@ import CodeEditor from '../components/CodeEditor';
 import { analyzeCode, health } from '../api';
 import StepByStepVisualizer from '../components/StepByStepVisualizer';
 import AlgorithmVisualizer from '../components/AlgorithmVisualizer';
-import FAANGProblems from '../components/FAANGProblems';
+import FAANGProblems from '../data/FAANGProblems';
 import ASTVisualizer from '../components/ASTVisualizer';
 import ComplexityChart from '../components/ComplexityChart';
 import OptimizationSuggestions from '../components/OptimizationSuggestions';

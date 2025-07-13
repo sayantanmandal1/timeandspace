@@ -32,6 +32,7 @@ import {
 import ErrorBoundary from './components/ErrorBoundary';
 import NotificationProvider from './components/NotificationToast';
 import LoadingSpinner from './components/LoadingSpinner';
+import { AuthProvider, useAuth } from './contexts/AuthContext';
 import {
   Home,
   Code,
@@ -63,6 +64,10 @@ import LearningPage from './pages/LearningPage';
 import CompetitionPage from './pages/CompetitionPage';
 import CommunityPage from './pages/CommunityPage';
 import AnalyticsPage from './pages/AnalyticsPage';
+import LoginPage from './pages/LoginPage';
+import RegisterPage from './pages/RegisterPage';
+import ForgotPasswordPage from './pages/ForgotPasswordPage';
+import ProfilePage from './pages/ProfilePage';
 
 const drawerWidth = 280;
 
@@ -489,6 +494,7 @@ function App() {
   const [darkMode, setDarkMode] = useState(false);
   const [anchorEl, setAnchorEl] = useState(null);
   const [notifications] = useState(3);
+  const { user, isAuthenticated, logout } = useAuth();
 
   const theme = createAppTheme(darkMode ? 'dark' : 'light');
 
@@ -504,11 +510,17 @@ function App() {
     setAnchorEl(null);
   };
 
+  const handleLogout = () => {
+    logout();
+    setAnchorEl(null);
+  };
+
   return (
     <ErrorBoundary>
-      <NotificationProvider>
-        <ThemeProvider theme={theme}>
-          <Router>
+      <AuthProvider>
+        <NotificationProvider>
+          <ThemeProvider theme={theme}>
+            <Router>
             <Box
               sx={{
                 display: 'flex',
@@ -564,7 +576,7 @@ function App() {
                             bgcolor: 'primary.main',
                           }}
                         >
-                          <AccountCircle />
+                          {user ? `${user.firstName?.charAt(0)}${user.lastName?.charAt(0)}` : <AccountCircle />}
                         </Avatar>
                       </IconButton>
                     </Tooltip>
@@ -583,16 +595,29 @@ function App() {
                       horizontal: 'right',
                     }}
                   >
-                    <MenuItem onClick={handleProfileMenuClose}>
-                      Profile
-                    </MenuItem>
-                    <MenuItem onClick={handleProfileMenuClose}>
-                      Settings
-                    </MenuItem>
-                    <MenuItem onClick={handleProfileMenuClose}>
-                      Upgrade to Pro
-                    </MenuItem>
-                    <MenuItem onClick={handleProfileMenuClose}>Logout</MenuItem>
+                    {isAuthenticated ? (
+                      <>
+                        <MenuItem onClick={handleProfileMenuClose} component={Link} to="/profile">
+                          Profile
+                        </MenuItem>
+                        <MenuItem onClick={handleProfileMenuClose}>
+                          Settings
+                        </MenuItem>
+                        <MenuItem onClick={handleProfileMenuClose}>
+                          Upgrade to Pro
+                        </MenuItem>
+                        <MenuItem onClick={handleLogout}>Logout</MenuItem>
+                      </>
+                    ) : (
+                      <>
+                        <MenuItem onClick={handleProfileMenuClose} component={Link} to="/login">
+                          Login
+                        </MenuItem>
+                        <MenuItem onClick={handleProfileMenuClose} component={Link} to="/register">
+                          Register
+                        </MenuItem>
+                      </>
+                    )}
                   </Menu>
                 </Toolbar>
               </AppBar>
@@ -612,6 +637,10 @@ function App() {
                   >
                     <Routes>
                       <Route path="/" element={<HomePage />} />
+                      <Route path="/login" element={<LoginPage />} />
+                      <Route path="/register" element={<RegisterPage />} />
+                      <Route path="/forgot-password" element={<ForgotPasswordPage />} />
+                      <Route path="/profile" element={<ProfilePage />} />
                       <Route path="/analyze" element={<AnalyzePage />} />
                       <Route path="/learning" element={<LearningPage />} />
                       <Route
@@ -636,6 +665,7 @@ function App() {
           </Router>
         </ThemeProvider>
       </NotificationProvider>
+      </AuthProvider>
     </ErrorBoundary>
   );
 }
